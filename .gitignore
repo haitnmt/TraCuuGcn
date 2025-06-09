@@ -390,10 +390,12 @@ FodyWeavers.xsd
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/c_cpp_properties.json
 *.code-workspace
 
 # Local History for Visual Studio Code
 .history/
+.vscode-test/
 
 # Windows Installer files from build outputs
 *.cab
@@ -403,4 +405,74 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+.idea/
 *.sln.iml
+*.sln.DotSettings.user
+
+# MAUI specific
+# Android
+*.keystore
+*.jks
+**/android/**/gen
+**/android/**/out
+**/android/local.properties
+**/android/**/local.properties
+**/android/**/gradle-wrapper.properties
+.gradle/
+build/
+
+# iOS
+**/ios/**/*.mode*
+**/ios/**/*.perspectivev3
+**/ios/**/*.pbxuser
+**/ios/**/*xcuserdata*
+**/ios/**/*xcshareddata*
+**/ios/**/*.xccheckout
+**/ios/**/*.moved-aside
+**/ios/**/*.xcworkspace/
+**/ios/**/DerivedData/
+**/ios/**/build/
+**/ios/**/*.ipa
+**/ios/**/*.app
+**/ios/**/*.dSYM
+
+# Mac
+**/mac/**/build/
+**/mac/**/*.app
+**/mac/**/*.dmg
+
+# Windows
+**/windows/**/AppPackages/
+**/windows/**/BundleArtifacts/
+**/windows/**/*.appx
+**/windows/**/*.appxbundle
+**/windows/**/*.appxupload
+**/windows/**/*.msix
+**/windows/**/*.msixbundle
+**/windows/**/*.msixupload
+
+# Platform-specific generated files
+**/Platforms/**/obj/
+**/Platforms/**/bin/
+
+# MAUI Hot Restart
+.mauihotrestart/
+
+# MAUI Workload
+.maui/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+
+# Temporary files
+**/android/app/google-services.json.backup
+**/ios/GoogleService-Info.plist.backup
+
+# Certificate files (be careful with these)
+*.p12
+*.mobileprovision
+*.cer
+*.certSigningRequest
