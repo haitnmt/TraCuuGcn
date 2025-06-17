@@ -1,0 +1,16 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tracuugcn_app (Flutter Pixel 9)",
+            "program": "lib/main.dart",
+            "cwd": "src\\app\\tracuugcn_app",
+            "deviceId": "emulator-5554",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
