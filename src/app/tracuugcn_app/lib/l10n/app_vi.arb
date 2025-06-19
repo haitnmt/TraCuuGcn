@@ -1,0 +1,224 @@
+{
+  "@@locale": "vi",
+  
+  "appTitle": "Tra cứu GCN",
+  "@appTitle": {
+    "description": "Title of the application"
+  },
+  "appVersion": "Phiên bản: 1.0.0",
+  "@appVersion": {
+    "description": "Version of the application"
+  },
+  "appDescription": "Tra cứu thông tin Giấy Chứng Nhận",
+  "@appDescription": {
+    "description": "Description of the application"
+  },
+  "copyright": "© 2025 - vpdkbacninh.vn | haihv.vn",
+  "@copyright": {
+    "description": "Copyright information"
+  },
+  
+  "searchHintText": "Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!",
+  "@searchHintText": {
+    "description": "Hint text for search input field"
+  },
+  "mobileSearchHintText": "Nhập thông tin tra cứu!",
+  "@mobileSearchHintText": {
+    "description": "Hint text for mobile search input field"
+  },
+  "helperText": "Mã QR • Mã vạch • Số phát hành (Serial) • Mã Giấy chứng nhận",
+  "@helperText": {
+    "description": "Helper text showing supported search types"
+  },
+  
+  "imageFeatureMessage": "Chức năng chọn ảnh sẽ được thêm vào!",
+  "@imageFeatureMessage": {
+    "description": "Message for image selection feature"
+  },
+  "qrFeatureMessage": "Chức năng quét QR sẽ được thêm vào!",
+  "@qrFeatureMessage": {
+    "description": "Message for QR scanning feature"
+  },
+  "searchFeatureMessage": "Chức năng tìm kiếm sẽ được thêm vào!",
+  "@searchFeatureMessage": {
+    "description": "Message for search feature"
+  },
+  "logoutSuccessMessage": "Đã đăng xuất thành công!",
+  "@logoutSuccessMessage": {
+    "description": "Success message after logout"
+  },
+  
+  "helpDialogTitle": "Hướng dẫn tra cứu",
+  "@helpDialogTitle": {
+    "description": "Title for help dialog"
+  },
+  "aboutDialogTitle": "Về ứng dụng",
+  "@aboutDialogTitle": {
+    "description": "Title for about dialog"
+  },
+  "logoutDialogTitle": "Xác nhận đăng xuất",
+  "@logoutDialogTitle": {
+    "description": "Title for logout confirmation dialog"
+  },
+  "languageDialogTitle": "Chọn ngôn ngữ",
+  "@languageDialogTitle": {
+    "description": "Title for language selection dialog"
+  },
+  
+  "imageTooltip": "Chọn ảnh từ thư viện",
+  "@imageTooltip": {
+    "description": "Tooltip for image selection button"
+  },
+  "qrTooltip": "Quét mã QR",
+  "@qrTooltip": {
+    "description": "Tooltip for QR scanning button"
+  },
+  "sendTooltip": "Gửi yêu cầu tra cứu",
+  "@sendTooltip": {
+    "description": "Tooltip for send/search button"
+  },
+  "helpTooltip": "Hướng dẫn nhập thông tin",
+  "@helpTooltip": {
+    "description": "Tooltip for help button"
+  },
+  "aboutTooltip": "Về chúng tôi",
+  "@aboutTooltip": {
+    "description": "Tooltip for about button"
+  },
+  "logoutTooltip": "Đăng xuất",
+  "@logoutTooltip": {
+    "description": "Tooltip for logout button"
+  },
+  
+  "homeMenuItem": "Trang chủ",
+  "@homeMenuItem": {
+    "description": "Home menu item"
+  },
+  "searchMenuItem": "Tra cứu",
+  "@searchMenuItem": {
+    "description": "Search menu item"
+  },
+  "historyMenuItem": "Lịch sử tra cứu",
+  "@historyMenuItem": {
+    "description": "History menu item"
+  },
+  "settingsMenuItem": "Cài đặt",
+  "@settingsMenuItem": {
+    "description": "Settings menu item"
+  },
+  "languageMenuItem": "Ngôn ngữ",
+  "@languageMenuItem": {
+    "description": "Language menu item"
+  },
+  
+  "closeButton": "Đóng",
+  "@closeButton": {
+    "description": "Close button text"
+  },
+  "cancelButton": "Hủy",
+  "@cancelButton": {
+    "description": "Cancel button text"
+  },
+  "logoutButton": "Đăng xuất",
+  "@logoutButton": {
+    "description": "Logout button text"
+  },
+  "understoodButton": "Đã hiểu",
+  "@understoodButton": {
+    "description": "Understood button text"
+  },
+  "selectButton": "Chọn",
+  "@selectButton": {
+    "description": "Select button text"
+  },
+  
+  "helpIntroText": "Bạn có thể tra cứu bằng một trong các thông tin sau:",
+  "@helpIntroText": {
+    "description": "Introduction text for help guide"
+  },
+  "helpQrText": "🔍 Mã QR Code:",
+  "@helpQrText": {
+    "description": "Help text for QR code lookup option"
+  },
+  "helpQrDescription": "   • Quét trực tiếp từ giấy chứng nhận",
+  "@helpQrDescription": {
+    "description": "Description for QR code lookup method"
+  },
+  "helpBarcodeText": "📱 Mã vạch (Barcode):",
+  "@helpBarcodeText": {
+    "description": "Help text for barcode lookup option"
+  },
+  "helpBarcodeDescription": "   • Dãy số dưới mã vạch trên GCN",
+  "@helpBarcodeDescription": {
+    "description": "Description for barcode lookup method"
+  },
+  "helpSerialText": "🔢 Số phát hành (Serial):",
+  "@helpSerialText": {
+    "description": "Help text for serial number lookup option"
+  },
+  "helpSerialDescription": "   • Số sê-ri ghi trên giấy chứng nhận",
+  "@helpSerialDescription": {
+    "description": "Description for serial number lookup method"
+  },
+  "helpSerialExample": "   • Ví dụ: BN-001234567",
+  "@helpSerialExample": {
+    "description": "Example format for serial number"
+  },
+  "helpGcnText": "📄 Mã Giấy chứng nhận:",
+  "@helpGcnText": {
+    "description": "Help text for certificate number lookup option"
+  },
+  "helpGcnDescription": "   • Mã số GCN ghi trên tài liệu",
+  "@helpGcnDescription": {
+    "description": "Description for certificate number lookup method"
+  },
+  "helpGcnExample": "   • Ví dụ: 27-T-123456789",
+  "@helpGcnExample": {
+    "description": "Example format for certificate number"
+  },
+  "helpNoteText": "Lưu ý: Chỉ cần nhập một trong các thông tin trên để tra cứu.",
+  "@helpNoteText": {
+    "description": "Note text for help guide"
+  },
+  
+  "mainTitle1": "TRA CỨU THÔNG TIN",
+  "@mainTitle1": {
+    "description": "Main title part 1"
+  },
+  "mainTitle2": "GIẤY CHỨNG NHẬN",
+  "@mainTitle2": {
+    "description": "Main title part 2"
+  },
+  "mainSubtitle": "QUYỀN SỬ DỤNG ĐẤT, QUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT",
+  "@mainSubtitle": {
+    "description": "Main subtitle for desktop view"
+  },
+  "mainSubtitleMobile": "QUYỀN SỬ DỤNG ĐẤT,\nQUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT",
+  "@mainSubtitleMobile": {
+    "description": "Main subtitle for mobile view"
+  },
+  "logoutConfirmMessage": "Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?",
+  "@logoutConfirmMessage": {
+    "description": "Logout confirmation message"
+  },
+  "vietnamese": "Tiếng Việt",
+  "@vietnamese": {
+    "description": "Vietnamese language option"
+  },
+  "english": "English",
+  "@english": {
+    "description": "English language option"
+  },
+  "clearHistory": "Xóa lịch sử",
+  "@clearHistory": {
+    "description": "Clear history button text"
+  },
+  "hoursAgo": "giờ trước",
+  "@hoursAgo": {
+    "description": "Hours ago time indicator"
+  },
+  "daysAgo": "ngày trước",
+  "@daysAgo": {
+    "description": "Days ago time indicator"
+  }
+}

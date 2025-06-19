@@ -9,10 +9,10 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get appTitle => 'Tra Cứu GCN';
+  String get appTitle => 'Tra cứu GCN';
 
   @override
-  String get appVersion => '1.0.0';
+  String get appVersion => 'Phiên bản: 1.0.0';
 
   @override
   String get appDescription => 'Tra cứu thông tin Giấy Chứng Nhận';
@@ -164,4 +164,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get english => 'English';
+
+  @override
+  String get clearHistory => 'Xóa lịch sử';
+
+  @override
+  String get hoursAgo => 'giờ trước';
+
+  @override
+  String get daysAgo => 'ngày trước';
 }

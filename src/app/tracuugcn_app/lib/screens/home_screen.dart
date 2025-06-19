@@ -31,15 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
     _searchController.dispose();
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(context),
+      drawer: AppDialogs.buildAppDrawer(context),
       body: _buildBody(context),
     );
-  }
-  /// Build the app bar with menu and action buttons
+  }  /// Build the app bar with menu and action buttons
   AppBar _buildAppBar(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
     
@@ -48,16 +47,8 @@ class _HomeScreenState extends State<HomeScreen> {
       centerTitle: true,
       backgroundColor: AppConstants.primaryColor,
       foregroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () => AppDialogs.showMenuBottomSheet(context),
-      ),
+      // Removed leading IconButton - AppBar will automatically show drawer button
       actions: [
-        IconButton(
-          icon: const Icon(Icons.info_outline),
-          tooltip: localizations.aboutTooltip,
-          onPressed: () => AppDialogs.showAboutDialog(context),
-        ),
         IconButton(
           icon: const Icon(Icons.logout),
           tooltip: localizations.logoutTooltip,

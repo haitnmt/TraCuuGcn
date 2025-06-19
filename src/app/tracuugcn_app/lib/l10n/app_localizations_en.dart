@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Certificate Lookup';
+  String get appTitle => 'Certificate Information';
 
   @override
-  String get appVersion => '1.0.0';
+  String get appVersion => 'Version: 1.0.0';
 
   @override
   String get appDescription => 'Certificate Information Lookup';
@@ -143,10 +143,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Note: Only need to enter one of the above information to search.';
 
   @override
-  String get mainTitle1 => 'CERTIFICATE INFORMATION';
+  String get mainTitle1 => 'LOOK UP INFORMATION';
 
   @override
-  String get mainTitle2 => 'LOOKUP SYSTEM';
+  String get mainTitle2 => 'CERTIFICATE';
 
   @override
   String get mainSubtitle =>
@@ -165,4 +165,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get english => 'English';
+
+  @override
+  String get clearHistory => 'Clear History';
+
+  @override
+  String get hoursAgo => 'hours ago';
+
+  @override
+  String get daysAgo => 'days ago';
 }

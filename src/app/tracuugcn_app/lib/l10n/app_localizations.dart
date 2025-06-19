@@ -98,305 +98,323 @@ abstract class AppLocalizations {
     Locale('vi'),
   ];
 
-  /// No description provided for @appTitle.
+  /// Title of the application
   ///
   /// In vi, this message translates to:
-  /// **'Tra Cứu GCN'**
+  /// **'Tra cứu GCN'**
   String get appTitle;
 
-  /// No description provided for @appVersion.
+  /// Version of the application
   ///
   /// In vi, this message translates to:
-  /// **'1.0.0'**
+  /// **'Phiên bản: 1.0.0'**
   String get appVersion;
 
-  /// No description provided for @appDescription.
+  /// Description of the application
   ///
   /// In vi, this message translates to:
   /// **'Tra cứu thông tin Giấy Chứng Nhận'**
   String get appDescription;
 
-  /// No description provided for @copyright.
+  /// Copyright information
   ///
   /// In vi, this message translates to:
   /// **'© 2025 - vpdkbacninh.vn | haihv.vn'**
   String get copyright;
 
-  /// No description provided for @searchHintText.
+  /// Hint text for search input field
   ///
   /// In vi, this message translates to:
   /// **'Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!'**
   String get searchHintText;
 
-  /// No description provided for @mobileSearchHintText.
+  /// Hint text for mobile search input field
   ///
   /// In vi, this message translates to:
   /// **'Nhập thông tin tra cứu!'**
   String get mobileSearchHintText;
 
-  /// No description provided for @helperText.
+  /// Helper text showing supported search types
   ///
   /// In vi, this message translates to:
   /// **'Mã QR • Mã vạch • Số phát hành (Serial) • Mã Giấy chứng nhận'**
   String get helperText;
 
-  /// No description provided for @imageFeatureMessage.
+  /// Message for image selection feature
   ///
   /// In vi, this message translates to:
   /// **'Chức năng chọn ảnh sẽ được thêm vào!'**
   String get imageFeatureMessage;
 
-  /// No description provided for @qrFeatureMessage.
+  /// Message for QR scanning feature
   ///
   /// In vi, this message translates to:
   /// **'Chức năng quét QR sẽ được thêm vào!'**
   String get qrFeatureMessage;
 
-  /// No description provided for @searchFeatureMessage.
+  /// Message for search feature
   ///
   /// In vi, this message translates to:
   /// **'Chức năng tìm kiếm sẽ được thêm vào!'**
   String get searchFeatureMessage;
 
-  /// No description provided for @logoutSuccessMessage.
+  /// Success message after logout
   ///
   /// In vi, this message translates to:
   /// **'Đã đăng xuất thành công!'**
   String get logoutSuccessMessage;
 
-  /// No description provided for @helpDialogTitle.
+  /// Title for help dialog
   ///
   /// In vi, this message translates to:
   /// **'Hướng dẫn tra cứu'**
   String get helpDialogTitle;
 
-  /// No description provided for @aboutDialogTitle.
+  /// Title for about dialog
   ///
   /// In vi, this message translates to:
   /// **'Về ứng dụng'**
   String get aboutDialogTitle;
 
-  /// No description provided for @logoutDialogTitle.
+  /// Title for logout confirmation dialog
   ///
   /// In vi, this message translates to:
   /// **'Xác nhận đăng xuất'**
   String get logoutDialogTitle;
 
-  /// No description provided for @languageDialogTitle.
+  /// Title for language selection dialog
   ///
   /// In vi, this message translates to:
   /// **'Chọn ngôn ngữ'**
   String get languageDialogTitle;
 
-  /// No description provided for @imageTooltip.
+  /// Tooltip for image selection button
   ///
   /// In vi, this message translates to:
   /// **'Chọn ảnh từ thư viện'**
   String get imageTooltip;
 
-  /// No description provided for @qrTooltip.
+  /// Tooltip for QR scanning button
   ///
   /// In vi, this message translates to:
   /// **'Quét mã QR'**
   String get qrTooltip;
 
-  /// No description provided for @sendTooltip.
+  /// Tooltip for send/search button
   ///
   /// In vi, this message translates to:
   /// **'Gửi yêu cầu tra cứu'**
   String get sendTooltip;
 
-  /// No description provided for @helpTooltip.
+  /// Tooltip for help button
   ///
   /// In vi, this message translates to:
   /// **'Hướng dẫn nhập thông tin'**
   String get helpTooltip;
 
-  /// No description provided for @aboutTooltip.
+  /// Tooltip for about button
   ///
   /// In vi, this message translates to:
   /// **'Về chúng tôi'**
   String get aboutTooltip;
 
-  /// No description provided for @logoutTooltip.
+  /// Tooltip for logout button
   ///
   /// In vi, this message translates to:
   /// **'Đăng xuất'**
   String get logoutTooltip;
 
-  /// No description provided for @homeMenuItem.
+  /// Home menu item
   ///
   /// In vi, this message translates to:
   /// **'Trang chủ'**
   String get homeMenuItem;
 
-  /// No description provided for @searchMenuItem.
+  /// Search menu item
   ///
   /// In vi, this message translates to:
   /// **'Tra cứu'**
   String get searchMenuItem;
 
-  /// No description provided for @historyMenuItem.
+  /// History menu item
   ///
   /// In vi, this message translates to:
   /// **'Lịch sử tra cứu'**
   String get historyMenuItem;
 
-  /// No description provided for @settingsMenuItem.
+  /// Settings menu item
   ///
   /// In vi, this message translates to:
   /// **'Cài đặt'**
   String get settingsMenuItem;
 
-  /// No description provided for @languageMenuItem.
+  /// Language menu item
   ///
   /// In vi, this message translates to:
   /// **'Ngôn ngữ'**
   String get languageMenuItem;
 
-  /// No description provided for @closeButton.
+  /// Close button text
   ///
   /// In vi, this message translates to:
   /// **'Đóng'**
   String get closeButton;
 
-  /// No description provided for @cancelButton.
+  /// Cancel button text
   ///
   /// In vi, this message translates to:
   /// **'Hủy'**
   String get cancelButton;
 
-  /// No description provided for @logoutButton.
+  /// Logout button text
   ///
   /// In vi, this message translates to:
   /// **'Đăng xuất'**
   String get logoutButton;
 
-  /// No description provided for @understoodButton.
+  /// Understood button text
   ///
   /// In vi, this message translates to:
   /// **'Đã hiểu'**
   String get understoodButton;
 
-  /// No description provided for @selectButton.
+  /// Select button text
   ///
   /// In vi, this message translates to:
   /// **'Chọn'**
   String get selectButton;
 
-  /// No description provided for @helpIntroText.
+  /// Introduction text for help guide
   ///
   /// In vi, this message translates to:
   /// **'Bạn có thể tra cứu bằng một trong các thông tin sau:'**
   String get helpIntroText;
 
-  /// No description provided for @helpQrText.
+  /// Help text for QR code lookup option
   ///
   /// In vi, this message translates to:
   /// **'🔍 Mã QR Code:'**
   String get helpQrText;
 
-  /// No description provided for @helpQrDescription.
+  /// Description for QR code lookup method
   ///
   /// In vi, this message translates to:
   /// **'   • Quét trực tiếp từ giấy chứng nhận'**
   String get helpQrDescription;
 
-  /// No description provided for @helpBarcodeText.
+  /// Help text for barcode lookup option
   ///
   /// In vi, this message translates to:
   /// **'📱 Mã vạch (Barcode):'**
   String get helpBarcodeText;
 
-  /// No description provided for @helpBarcodeDescription.
+  /// Description for barcode lookup method
   ///
   /// In vi, this message translates to:
   /// **'   • Dãy số dưới mã vạch trên GCN'**
   String get helpBarcodeDescription;
 
-  /// No description provided for @helpSerialText.
+  /// Help text for serial number lookup option
   ///
   /// In vi, this message translates to:
   /// **'🔢 Số phát hành (Serial):'**
   String get helpSerialText;
 
-  /// No description provided for @helpSerialDescription.
+  /// Description for serial number lookup method
   ///
   /// In vi, this message translates to:
   /// **'   • Số sê-ri ghi trên giấy chứng nhận'**
   String get helpSerialDescription;
 
-  /// No description provided for @helpSerialExample.
+  /// Example format for serial number
   ///
   /// In vi, this message translates to:
   /// **'   • Ví dụ: BN-001234567'**
   String get helpSerialExample;
 
-  /// No description provided for @helpGcnText.
+  /// Help text for certificate number lookup option
   ///
   /// In vi, this message translates to:
   /// **'📄 Mã Giấy chứng nhận:'**
   String get helpGcnText;
 
-  /// No description provided for @helpGcnDescription.
+  /// Description for certificate number lookup method
   ///
   /// In vi, this message translates to:
   /// **'   • Mã số GCN ghi trên tài liệu'**
   String get helpGcnDescription;
 
-  /// No description provided for @helpGcnExample.
+  /// Example format for certificate number
   ///
   /// In vi, this message translates to:
   /// **'   • Ví dụ: 27-T-123456789'**
   String get helpGcnExample;
 
-  /// No description provided for @helpNoteText.
+  /// Note text for help guide
   ///
   /// In vi, this message translates to:
   /// **'Lưu ý: Chỉ cần nhập một trong các thông tin trên để tra cứu.'**
   String get helpNoteText;
 
-  /// No description provided for @mainTitle1.
+  /// Main title part 1
   ///
   /// In vi, this message translates to:
   /// **'TRA CỨU THÔNG TIN'**
   String get mainTitle1;
 
-  /// No description provided for @mainTitle2.
+  /// Main title part 2
   ///
   /// In vi, this message translates to:
   /// **'GIẤY CHỨNG NHẬN'**
   String get mainTitle2;
 
-  /// No description provided for @mainSubtitle.
+  /// Main subtitle for desktop view
   ///
   /// In vi, this message translates to:
   /// **'QUYỀN SỬ DỤNG ĐẤT, QUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT'**
   String get mainSubtitle;
 
-  /// No description provided for @mainSubtitleMobile.
+  /// Main subtitle for mobile view
   ///
   /// In vi, this message translates to:
   /// **'QUYỀN SỬ DỤNG ĐẤT,\nQUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT'**
   String get mainSubtitleMobile;
 
-  /// No description provided for @logoutConfirmMessage.
+  /// Logout confirmation message
   ///
   /// In vi, this message translates to:
   /// **'Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng?'**
   String get logoutConfirmMessage;
 
-  /// No description provided for @vietnamese.
+  /// Vietnamese language option
   ///
   /// In vi, this message translates to:
   /// **'Tiếng Việt'**
   String get vietnamese;
 
-  /// No description provided for @english.
+  /// English language option
   ///
   /// In vi, this message translates to:
   /// **'English'**
   String get english;
+
+  /// Clear history button text
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa lịch sử'**
+  String get clearHistory;
+
+  /// Hours ago time indicator
+  ///
+  /// In vi, this message translates to:
+  /// **'giờ trước'**
+  String get hoursAgo;
+
+  /// Days ago time indicator
+  ///
+  /// In vi, this message translates to:
+  /// **'ngày trước'**
+  String get daysAgo;
 }
 
 class _AppLocalizationsDelegate

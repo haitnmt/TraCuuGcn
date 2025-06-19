@@ -44,7 +44,7 @@ class SearchWidget extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final isMobile = ResponsiveUtils.isMobile(context);
-          
+
           if (isMobile) {
             return _buildMobileLayout(context);
           } else {
@@ -76,23 +76,30 @@ class SearchWidget extends StatelessWidget {
             const SizedBox(width: 12),
             ActionButtons.buildLargeScreenActionButtons(context),
           ],
-        ),        if (showHelperText) ...[
+        ),
+        if (showHelperText) ...[
           const SizedBox(height: 8),
           _buildHelperText(context),
         ],
       ],
     );
-  }
-  /// Build TextField for mobile devices
+  }  /// Build TextField for mobile devices
   Widget _buildMobileTextField(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     return TextField(
       controller: controller,
-      maxLines: null,
+      maxLines: 3,
       minLines: 1,
       keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
+      textInputAction: TextInputAction.search,
+      onSubmitted: (value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.searchFeatureMessage),
+          ),
+        );
+      },
       decoration: InputDecoration(
         hintText: localizations.mobileSearchHintText,
         prefixIcon: const Icon(Icons.search, color: AppConstants.primaryColor),
@@ -120,17 +127,23 @@ class SearchWidget extends StatelessWidget {
       ),
     );
   }
-
   /// Build TextField for large screens
   Widget _buildLargeScreenTextField(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     return TextField(
       controller: controller,
-      maxLines: null,
       minLines: 1,
+      maxLines: 2,
       keyboardType: TextInputType.multiline,
-      textInputAction: TextInputAction.newline,
+      textInputAction: TextInputAction.search,
+      onSubmitted: (value) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(localizations.searchFeatureMessage),
+          ),
+        );
+      },
       decoration: InputDecoration(
         hintText: localizations.searchHintText,
         prefixIcon: const Icon(Icons.search, color: AppConstants.primaryColor),
@@ -162,7 +175,7 @@ class SearchWidget extends StatelessWidget {
   /// Build helper text for large screens
   Widget _buildHelperText(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    
+
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
