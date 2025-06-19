@@ -23,23 +23,60 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  bool _showHelperText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _showHelperText = _searchController.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   Widget _buildSearchWidget() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+        color: Colors.white.withValues(
+          alpha: 0.95,
+        ), // Semi-transparent background
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+            spreadRadius: 2,
+          ),
+          BoxShadow(
+            color: Colors.white.withValues(alpha: 0.8),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
         ],
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.3),
+          width: 1,
+        ),
       ),
       child: Builder(
         builder: (context) {
@@ -47,90 +84,129 @@ class HomeScreen extends StatelessWidget {
           final screenWidth = MediaQuery.of(context).size.width;
           final isMobile = screenWidth < 600; // Tablet breakpoint
           if (isMobile) {
-            // Mobile layout: TextField and vertical buttons in same row
-            return Row(
+            // Mobile layout: TextField above, buttons below on the right
+            return Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    maxLines: 3,
-                    minLines: 3,
-                    decoration: InputDecoration(
-                      hintText:
-                          'Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!',
-                      prefixIcon: const Padding(
-                        padding: EdgeInsets.only(bottom: 40),
-                        child: Icon(Icons.search),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
+                TextField(
+                  controller: _searchController,
+                  maxLines: null, // Auto-expand
+                  minLines: 1,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  decoration: InputDecoration(
+                    hintText: 'Nhập thông tin tra cứu!',
+                    prefixIcon: const Icon(Icons.search, color: Colors.red),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.red, width: 2),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                // Vertical buttons on the right
-                Column(
-                  mainAxisSize: MainAxisSize.min,
+                const SizedBox(height: 12),
+                // Help button on left, action buttons on right for mobile
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildImageButton(context),
-                    const SizedBox(height: 4),
-                    _buildQRButton(context),
-                    const SizedBox(height: 4),
-                    _buildSendButton(context),
+                    _buildMobileHelpButton(context),
+                    Row(
+                      children: [
+                        _buildMobileImageButton(context),
+                        const SizedBox(width: 6),
+                        _buildMobileQRButton(context),
+                        const SizedBox(width: 6),
+                        _buildMobileSendButton(context),
+                      ],
+                    ),
                   ],
                 ),
               ],
             );
           } else {
             // Large screen layout: TextField and buttons in same row
-            return Row(
+            return Column(
               children: [
-                Expanded(
-                  child: TextField(
-                    maxLines: 1,
-                    minLines: 1,
-                    decoration: InputDecoration(
-                      hintText: 'Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.red,
-                          width: 2,
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        maxLines: null, // Auto-expand
+                        minLines: 1,
+                        keyboardType: TextInputType.multiline,
+                        textInputAction: TextInputAction.newline,
+                        decoration: InputDecoration(
+                          hintText:
+                              'Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!',
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: Colors.red,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(
+                              color: Colors.red,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey.shade50,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
                         ),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
+                    ),
+                    const SizedBox(width: 12),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildImageButton(context),
+                        const SizedBox(width: 8),
+                        _buildQRButton(context),
+                        const SizedBox(width: 8),
+                        _buildSendButton(context),
+                      ],
+                    ),
+                  ],
+                ),
+                // Helper text for large screens when text is entered
+                if (_showHelperText) ...[
+                  const SizedBox(height: 2),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        'ℹ️ Mã QR, Mã vạch, Số phát hành (Serial) hoặc Mã Giấy chứng nhận',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade600,
+                        fontStyle: FontStyle.normal,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildImageButton(context),
-                    const SizedBox(width: 8),
-                    _buildQRButton(context),
-                    const SizedBox(width: 8),
-                    _buildSendButton(context),
-                  ],
-                ),
+                ],
               ],
             );
           }
@@ -198,6 +274,194 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
           child: const Icon(Icons.send, size: 18, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  // Mobile-specific buttons with smaller icons
+  Widget _buildMobileImageButton(BuildContext context) {
+    return Tooltip(
+      message: 'Chọn ảnh từ thư viện',
+      child: InkWell(
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Chức năng chọn ảnh sẽ được thêm vào!'),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Icon(Icons.image, size: 16, color: Colors.grey[600]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileQRButton(BuildContext context) {
+    return Tooltip(
+      message: 'Quét mã QR',
+      child: InkWell(
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Chức năng quét QR sẽ được thêm vào!'),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300),
+          ),
+          child: Icon(Icons.qr_code_scanner, size: 16, color: Colors.grey[600]),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileSendButton(BuildContext context) {
+    return Tooltip(
+      message: 'Gửi yêu cầu tra cứu',
+      child: InkWell(
+        onTap: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Chức năng tìm kiếm sẽ được thêm vào!'),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(Icons.send, size: 16, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileHelpButton(BuildContext context) {
+    return Tooltip(
+      message: 'Hướng dẫn nhập thông tin',
+      child: InkWell(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Row(
+                children: [
+                  Icon(Icons.help_outline, color: Colors.red),
+                  SizedBox(width: 8),
+                  Text('Hướng dẫn tra cứu'),
+                ],
+              ),
+              content: const SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Bạn có thể tra cứu bằng một trong các thông tin sau:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 12),
+                    Text('🔍 Mã QR Code:'),
+                    Text(
+                      '   • Quét trực tiếp từ Giấy chứng nhận',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      '   • Nhập chuỗi ký tự của mã QR khi quét bằng ứng dụng khác',
+                      style: TextStyle(fontSize: 13),
+                    ),
+
+                    SizedBox(height: 8),
+                    Text('📱 Mã vạch (Barcode):'),
+                    Text(
+                      '   • Quét trực tiếp từ Giấy chứng nhận',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      '   • Nhập dãy số phía dưới mã vạch',
+                      style: TextStyle(fontSize: 13),
+                    ),
+
+                    SizedBox(height: 8),
+                    Text('🔢 Số phát hành (Serial):'),
+                    Text(
+                      '   • Số sê-ri ghi trên Giấy chứng nhận',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      '   • Ví dụ: AA 01234567',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text('📄 Mã Giấy chứng nhận:'),
+                    Text(
+                      '   • Mã GCN phía dưới mã QR',
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    Text(
+                      '   • Ví dụ: 27-T-123456789',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Lưu ý: Chỉ cần nhập một trong các thông tin trên để tra cứu.',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Đã hiểu',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: Colors.blue.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.blue.shade200),
+          ),
+          child: Icon(
+            Icons.help_outline,
+            size: 16,
+            color: Colors.blue.shade600,
+          ),
         ),
       ),
     );
@@ -328,63 +592,64 @@ class HomeScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage('assets/images/bg.jpg'),
-            fit: BoxFit.cover, // Cover the entire container
-            alignment: Alignment.center, // Center the image
-            opacity: 0.8, // Make background more visible
+            fit: BoxFit.cover,
+            alignment: Alignment.center,
+            opacity: 0.8,
           ),
         ),
-        child: Column(
+        child: Stack(
           children: [
             // Main content area
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'TRA CỨU THÔNG TIN',
-                      style: Theme.of(context).textTheme.headlineSmall
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                      textAlign: TextAlign.center,
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'TRA CỨU THÔNG TIN',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'GIẤY CHỨNG NHẬN',
-                      style: Theme.of(context).textTheme.headlineMedium
-                          ?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
-                      textAlign: TextAlign.center,
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'GIẤY CHỨNG NHẬN',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
                     ),
-                    const SizedBox(height: 4),
-                    Builder(
-                      builder: (context) {
-                        final screenWidth = MediaQuery.of(context).size.width;
-                        final isSmallScreen = screenWidth < 600;
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 4),
+                  Builder(
+                    builder: (context) {
+                      final screenWidth = MediaQuery.of(context).size.width;
+                      final isSmallScreen = screenWidth < 600;
 
-                        return Text(
-                          isSmallScreen
-                              ? 'QUYỀN SỬ DỤNG ĐẤT,\nQUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT'
-                              : 'QUYỀN SỬ DỤNG ĐẤT, QUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.red,
-                              ),
-                          textAlign: TextAlign.center,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                      return Text(
+                        isSmallScreen
+                            ? 'QUYỀN SỬ DỤNG ĐẤT,\nQUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT'
+                            : 'QUYỀN SỬ DỤNG ĐẤT, QUYỀN SỞ HỮU TÀI SẢN GẮN LIỀN VỚI ĐẤT',
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
+                            ),
+                        textAlign: TextAlign.center,
+                      );
+                    },
+                  ),
+                ],
               ),
             ),
-            // Fixed search widget at bottom
-            _buildSearchWidget(),
+            // Floating search widget positioned at bottom
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: _buildSearchWidget(),
+            ),
           ],
         ),
       ),
