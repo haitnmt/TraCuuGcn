@@ -29,7 +29,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get helperText =>
-      'QR Code • Barcode • Serial Number • Certificate Number';
+      'QR Code, Barcode, Serial Number or Certificate Number';
 
   @override
   String get imageFeatureMessage => 'Image selection feature will be added!';

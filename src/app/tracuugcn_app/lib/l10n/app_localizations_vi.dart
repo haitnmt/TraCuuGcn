@@ -29,7 +29,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get helperText =>
-      'Mã QR • Mã vạch • Số phát hành (Serial) • Mã Giấy chứng nhận';
+      'Mã QR, Mã vạch, Số phát hành (Serial) hoặc Mã Giấy chứng nhận';
 
   @override
   String get imageFeatureMessage => 'Chức năng chọn ảnh sẽ được thêm vào!';

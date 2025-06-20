@@ -66,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
           image: AssetImage(AppConstants.backgroundImage),
           fit: BoxFit.cover,
           alignment: Alignment.center,
-          opacity: 0.8,
+          opacity: 0.35,
         ),
       ),
       child: Stack(
@@ -77,20 +77,31 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
   /// Build the main content with titles
   Widget _buildMainContent(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildTitle1(context),
-          const SizedBox(height: 12),
-          _buildTitle2(context),
-          const SizedBox(height: 4),
-          _buildSubtitle(context),
-        ],
-      ),
+    return Column(
+      children: [
+        // Spacer để đẩy content xuống khoảng 1/3 màn hình
+        const Spacer(flex: 1),
+        // Content chính
+        Expanded(
+          flex: 2,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildTitle1(context),
+                const SizedBox(height: 12),
+                _buildTitle2(context),
+                const SizedBox(height: 4),
+                _buildSubtitle(context),
+              ],
+            ),
+          ),
+        ),
+        // Spacer để cân bằng phần còn lại
+        const Spacer(flex: 2),
+      ],
     );
   }
   /// Build the first title

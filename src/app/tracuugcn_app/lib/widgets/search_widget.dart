@@ -83,7 +83,9 @@ class SearchWidget extends StatelessWidget {
         ],
       ],
     );
-  }  /// Build TextField for mobile devices
+  }
+
+  /// Build TextField for mobile devices
   Widget _buildMobileTextField(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
@@ -95,9 +97,7 @@ class SearchWidget extends StatelessWidget {
       textInputAction: TextInputAction.search,
       onSubmitted: (value) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations.searchFeatureMessage),
-          ),
+          SnackBar(content: Text(localizations.searchFeatureMessage)),
         );
       },
       decoration: InputDecoration(
@@ -127,6 +127,7 @@ class SearchWidget extends StatelessWidget {
       ),
     );
   }
+
   /// Build TextField for large screens
   Widget _buildLargeScreenTextField(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -139,9 +140,7 @@ class SearchWidget extends StatelessWidget {
       textInputAction: TextInputAction.search,
       onSubmitted: (value) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(localizations.searchFeatureMessage),
-          ),
+          SnackBar(content: Text(localizations.searchFeatureMessage)),
         );
       },
       decoration: InputDecoration(
@@ -179,11 +178,11 @@ class SearchWidget extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
-        localizations.helperText,
+        "💡${localizations.helperText}",
         style: TextStyle(
           fontSize: AppConstants.smallTextSize,
           color: Colors.grey.shade600,
-          fontStyle: FontStyle.italic,
+          fontStyle: FontStyle.normal,
         ),
       ),
     );

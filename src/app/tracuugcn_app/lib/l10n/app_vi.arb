@@ -1,6 +1,5 @@
 {
   "@@locale": "vi",
-  
   "appTitle": "Tra cứu GCN",
   "@appTitle": {
     "description": "Title of the application"
@@ -17,7 +16,6 @@
   "@copyright": {
     "description": "Copyright information"
   },
-  
   "searchHintText": "Nhập thông tin mã Qr, mã vạch, số phát hành (Serial) hoặc mã Giấy chứng nhận!",
   "@searchHintText": {
     "description": "Hint text for search input field"
@@ -26,11 +24,10 @@
   "@mobileSearchHintText": {
     "description": "Hint text for mobile search input field"
   },
-  "helperText": "Mã QR • Mã vạch • Số phát hành (Serial) • Mã Giấy chứng nhận",
+  "helperText": "Mã QR, Mã vạch, Số phát hành (Serial) hoặc Mã Giấy chứng nhận",
   "@helperText": {
     "description": "Helper text showing supported search types"
   },
-  
   "imageFeatureMessage": "Chức năng chọn ảnh sẽ được thêm vào!",
   "@imageFeatureMessage": {
     "description": "Message for image selection feature"
@@ -47,7 +44,6 @@
   "@logoutSuccessMessage": {
     "description": "Success message after logout"
   },
-  
   "helpDialogTitle": "Hướng dẫn tra cứu",
   "@helpDialogTitle": {
     "description": "Title for help dialog"
@@ -64,7 +60,6 @@
   "@languageDialogTitle": {
     "description": "Title for language selection dialog"
   },
-  
   "imageTooltip": "Chọn ảnh từ thư viện",
   "@imageTooltip": {
     "description": "Tooltip for image selection button"
@@ -89,7 +84,6 @@
   "@logoutTooltip": {
     "description": "Tooltip for logout button"
   },
-  
   "homeMenuItem": "Trang chủ",
   "@homeMenuItem": {
     "description": "Home menu item"
@@ -110,7 +104,6 @@
   "@languageMenuItem": {
     "description": "Language menu item"
   },
-  
   "closeButton": "Đóng",
   "@closeButton": {
     "description": "Close button text"
@@ -131,7 +124,6 @@
   "@selectButton": {
     "description": "Select button text"
   },
-  
   "helpIntroText": "Bạn có thể tra cứu bằng một trong các thông tin sau:",
   "@helpIntroText": {
     "description": "Introduction text for help guide"
@@ -180,7 +172,6 @@
   "@helpNoteText": {
     "description": "Note text for help guide"
   },
-  
   "mainTitle1": "TRA CỨU THÔNG TIN",
   "@mainTitle1": {
     "description": "Main title part 1"

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
@@ -7,6 +8,12 @@ import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Khóa màn hình ở chế độ dọc (không cho phép xoay màn hình)
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
   final languageService = LanguageService();
   await languageService.loadLanguage();
   runApp(MyApp(languageService: languageService));
@@ -14,7 +21,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final LanguageService languageService;
-  
+
   const MyApp({super.key, required this.languageService});
 
   @override
@@ -39,10 +46,7 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            supportedLocales: const [
-              Locale('vi', 'VN'),
-              Locale('en', 'US'),
-            ],
+            supportedLocales: const [Locale('vi', 'VN'), Locale('en', 'US')],
             home: const HomeScreen(),
           );
         },

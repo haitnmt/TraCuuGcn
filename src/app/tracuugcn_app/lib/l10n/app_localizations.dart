@@ -137,7 +137,7 @@ abstract class AppLocalizations {
   /// Helper text showing supported search types
   ///
   /// In vi, this message translates to:
-  /// **'Mã QR • Mã vạch • Số phát hành (Serial) • Mã Giấy chứng nhận'**
+  /// **'Mã QR, Mã vạch, Số phát hành (Serial) hoặc Mã Giấy chứng nhận'**
   String get helperText;
 
   /// Message for image selection feature
