@@ -1,0 +1,44 @@
+# Source Directory .gitignore
+# This file contains ignore rules specific to the src directory
+
+# Common build outputs
+build/
+dist/
+out/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Configuration files with sensitive data
+appsettings.Production.json
+appsettings.Staging.json
+config/production.json
+config/staging.json
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Connection strings and secrets
+connectionstrings.json
+secrets.json
+
+# Certificate files
+*.pfx
+*.p12
+*.key
+*.crt
+*.pem
+
+# Docker files (if any)
+docker-compose.override.yml
+.dockerignore
+
+# Test results
+TestResults/
+coverage/
+
+# Documentation build
+docs/build/

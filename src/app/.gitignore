@@ -1,0 +1,98 @@
+# Flutter/Dart Project .gitignore
+
+# Flutter/Dart build outputs and caches (safe to ignore)
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+build/
+
+# Files created by pub (but keep pubspec.lock for consistency)
+.packages
+
+# Directory created by dartdoc
+doc/api/
+
+# Flutter/Dart generated files that can be regenerated
+ios/Flutter/flutter_assets/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+ios/ServiceDefinitions.json
+android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java
+lib/generated_plugin_registrant.dart
+
+# Build artifacts (safe to ignore)
+android/app/debug/
+android/app/profile/
+android/app/release/
+android/.gradle/
+android/captures/
+android/key.properties
+*.keystore
+*.jks
+
+# iOS build artifacts and user-specific files (safe to ignore)
+ios/Pods/
+ios/Podfile.lock
+ios/.symlinks/
+ios/Flutter/flutter_assets/
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Generated.xcconfig
+
+# iOS user-specific files (ignore these but keep project files)
+ios/Runner.xcodeproj/xcuserdata/
+ios/Runner.xcworkspace/xcuserdata/
+ios/**/*.pbxuser
+ios/**/*.mode1v3
+ios/**/*.mode2v3
+ios/**/*.perspectivev3
+ios/**/*.xccheckout
+ios/**/*.moved-aside
+ios/**/DerivedData/
+ios/**/*.hmap
+ios/**/*.ipa
+ios/**/*.xcuserstate
+
+# Keep project configuration files for team development
+!ios/Runner.xcodeproj/project.pbxproj
+!ios/Runner.xcworkspace/contents.xcworkspacedata
+!macos/Runner.xcodeproj/project.pbxproj
+!macos/Runner.xcworkspace/contents.xcworkspacedata
+
+# Generated and cache files (safe to ignore)
+*.g.dart
+*.freezed.dart
+*.chopper.dart
+*.gr.dart
+coverage/
+lcov.info
+
+# Firebase config files (sensitive - should be managed per environment)
+firebase_options.dart
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Test coverage
+test/.test_coverage.dart
+
+# Temporary database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Flutter Version Management
+.fvm/flutter_sdk
+
+# Platform specific generated files (safe to ignore)
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+macos/Flutter/GeneratedPluginRegistrant.swift
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+
+# Keep important configuration files for cross-platform development
+!android/app/src/main/AndroidManifest.xml
+!ios/Runner/Info.plist
+!pubspec.yaml
+!pubspec.lock
