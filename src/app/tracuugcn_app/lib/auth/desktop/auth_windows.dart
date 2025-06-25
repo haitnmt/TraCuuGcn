@@ -97,22 +97,29 @@ class WindowsAuth implements AuthProvider {
     try {
       debugPrint("[WindowsAuth] Starting logout...");
       
-      // Get refresh token for logout
-      final refreshToken = await _storage.getSecureData(_refreshTokenKey);
-      
-      // Build logout URL
-      final logoutUrl = _buildLogoutUrl(refreshToken);
-      if (logoutUrl != null) {
-        await _launchUrl(logoutUrl);
+      // Logout from Keycloak server first (silent logout)
+      try {
+        final refreshToken = await _storage.getSecureData(_refreshTokenKey);
+        if (refreshToken != null && refreshToken.isNotEmpty) {
+          debugPrint("[WindowsAuth] Performing server logout...");
+          await _performSilentLogout(refreshToken);
+        } else {
+          debugPrint("[WindowsAuth] No refresh token for server logout");
+        }
+      } catch (e) {
+        debugPrint("[WindowsAuth] Server logout failed (continuing with local logout): $e");
       }
       
-      // Clear stored data
+      // Clear local data
       await _clearAuthData();
       
-      debugPrint("[WindowsAuth] Logout completed");
+      debugPrint("[WindowsAuth] Logout completed (server + local)");
+      
     } catch (e, stackTrace) {
       debugPrint("[WindowsAuth] Logout error: $e");
       debugPrint("[WindowsAuth] Stack trace: $stackTrace");
+      // Even if logout fails, clear local data
+      await _clearAuthData();
       rethrow;
     }
   }
@@ -539,6 +546,78 @@ class WindowsAuth implements AuthProvider {
       // If refresh fails, clear tokens to force re-authentication
       await _clearAuthData();
       rethrow;
+    }
+  }
+  
+  /// Perform silent logout on Keycloak server without opening browser
+  Future<void> _performSilentLogout(String? refreshToken) async {
+    try {
+      if (refreshToken == null || refreshToken.isEmpty) {
+        debugPrint("[WindowsAuth] No refresh token for server logout");
+        return;
+      }
+      
+      final logoutEndpoint = '${_config.issuer}protocol/openid-connect/logout';
+      
+      // Prepare logout request body
+      final body = <String, String>{
+        'client_id': _config.clientId,
+        'refresh_token': refreshToken,
+      };
+      
+      // Add client_secret if available (for confidential clients)
+      if (_config.clientSecret != null && _config.clientSecret!.isNotEmpty) {
+        body['client_secret'] = _config.clientSecret!;
+      }
+      
+      debugPrint("[WindowsAuth] Logout endpoint: $logoutEndpoint");
+      debugPrint("[WindowsAuth] Logout request params: ${body.keys.join(', ')}");
+      
+      final response = await http.post(
+        Uri.parse(logoutEndpoint),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+        },
+        body: body,
+      );
+      
+      debugPrint("[WindowsAuth] Silent logout response status: ${response.statusCode}");
+      debugPrint("[WindowsAuth] Silent logout response: ${response.body}");
+      
+      // Keycloak logout typically returns 204 (No Content) on success
+      if (response.statusCode == 204 || response.statusCode == 200) {
+        debugPrint("[WindowsAuth] Server logout successful - SSO session terminated");
+      } else if (response.statusCode == 400) {
+        debugPrint("[WindowsAuth] Server logout failed - bad request: ${response.body}");
+        // Try without client_secret for public clients
+        if (_config.clientSecret != null) {
+          debugPrint("[WindowsAuth] Retrying logout as public client...");
+          final publicBody = <String, String>{
+            'client_id': _config.clientId,
+            'refresh_token': refreshToken,
+          };
+          
+          final publicResponse = await http.post(
+            Uri.parse(logoutEndpoint),
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Accept': 'application/json',
+            },
+            body: publicBody,
+          );
+          
+          debugPrint("[WindowsAuth] Public client logout response: ${publicResponse.statusCode}");
+          if (publicResponse.statusCode == 204 || publicResponse.statusCode == 200) {
+            debugPrint("[WindowsAuth] Public client logout successful");
+          }
+        }
+      } else {
+        debugPrint("[WindowsAuth] Server logout failed with status ${response.statusCode}: ${response.body}");
+      }
+    } catch (e) {
+      debugPrint("[WindowsAuth] Silent logout error: $e");
+      // Don't throw error, as local logout should still proceed
     }
   }
   

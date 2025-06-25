@@ -68,9 +68,12 @@ flutter run -d windows
 
 ### 4. Test Logout
 - Click nút **"Logout"**
-- Browser sẽ mở Keycloak logout page
-- App sẽ clear stored data
+- App sẽ thực hiện:
+  1. **Server logout**: Gửi HTTP POST request đến Keycloak logout endpoint để terminate SSO session
+  2. **Local logout**: Clear stored tokens và user info từ secure storage
+- **Không mở browser** cho logout (silent logout)
 - UI sẽ cập nhật trạng thái về "Not authenticated"
+- **Khi login lại**: Sẽ yêu cầu đăng nhập lại trên Keycloak (vì SSO session đã bị terminate)
 
 ## Troubleshooting
 
