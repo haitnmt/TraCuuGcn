@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/auth_test_screen.dart';
 import 'services/language_service.dart';
 import 'l10n/app_localizations.dart';
 
@@ -47,7 +49,12 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [Locale('vi', 'VN'), Locale('en', 'US')],
-            home: const HomeScreen(),
+            initialRoute: '/auth-test',
+            routes: {
+              '/auth-test': (context) => const AuthTestScreen(),
+              '/login': (context) => const LoginScreen(),
+              '/home': (context) => const HomeScreen(),
+            },
           );
         },
       ),

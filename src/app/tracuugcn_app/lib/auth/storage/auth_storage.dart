@@ -1,3 +1,6 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 // Storage interface cho việc lưu trữ dữ liệu xác thực
 abstract class AuthStorage {
   Future<void> storeToken(String key, String token);
@@ -7,102 +10,141 @@ abstract class AuthStorage {
   Future<String?> getUser();
   Future<void> removeUser();
   Future<void> clear();
+  
+  // Secure storage methods
+  Future<void> storeSecureData(String key, String data);
+  Future<String?> getSecureData(String key);
+  Future<void> deleteSecureData(String key);
 }
 
-// Secure storage implementation (sẽ được implement cụ thể cho từng platform)
+// Secure storage implementation
 class SecureAuthStorage implements AuthStorage {
-  // TODO: Implement using flutter_secure_storage or similar
+  static const _secureStorage = FlutterSecureStorage();
   
   @override
   Future<void> storeToken(String key, String token) async {
-    // Implement secure token storage
-    print("Storing token securely: $key");
+    await _secureStorage.write(key: key, value: token);
   }
 
   @override
   Future<String?> getToken(String key) async {
-    // Implement secure token retrieval
-    print("Getting token securely: $key");
-    return null;
+    return await _secureStorage.read(key: key);
   }
 
   @override
   Future<void> removeToken(String key) async {
-    // Implement secure token removal
-    print("Removing token securely: $key");
+    await _secureStorage.delete(key: key);
   }
 
   @override
   Future<void> storeUser(String user) async {
-    // Implement secure user storage
-    print("Storing user securely");
+    await _secureStorage.write(key: 'user_data', value: user);
   }
 
   @override
   Future<String?> getUser() async {
-    // Implement secure user retrieval
-    print("Getting user securely");
-    return null;
+    return await _secureStorage.read(key: 'user_data');
   }
 
   @override
   Future<void> removeUser() async {
-    // Implement secure user removal
-    print("Removing user securely");
+    await _secureStorage.delete(key: 'user_data');
   }
 
   @override
   Future<void> clear() async {
-    // Implement secure storage clear
-    print("Clearing secure storage");
+    await _secureStorage.deleteAll();
+  }
+  
+  @override
+  Future<void> storeSecureData(String key, String data) async {
+    await _secureStorage.write(key: key, value: data);
+  }
+
+  @override
+  Future<String?> getSecureData(String key) async {
+    return await _secureStorage.read(key: key);
+  }
+
+  @override
+  Future<void> deleteSecureData(String key) async {
+    await _secureStorage.delete(key: key);
   }
 }
 
 // Regular storage implementation (for non-sensitive data)
 class RegularAuthStorage implements AuthStorage {
-  // TODO: Implement using SharedPreferences or similar
+  static SharedPreferences? _prefs;
+  
+  Future<SharedPreferences> get _preferences async {
+    _prefs ??= await SharedPreferences.getInstance();
+    return _prefs!;
+  }
   
   @override
   Future<void> storeToken(String key, String token) async {
-    // Implement regular token storage
-    print("Storing token: $key");
+    final prefs = await _preferences;
+    await prefs.setString(key, token);
   }
 
   @override
   Future<String?> getToken(String key) async {
-    // Implement regular token retrieval
-    print("Getting token: $key");
-    return null;
+    final prefs = await _preferences;
+    return prefs.getString(key);
   }
 
   @override
   Future<void> removeToken(String key) async {
-    // Implement regular token removal
-    print("Removing token: $key");
+    final prefs = await _preferences;
+    await prefs.remove(key);
   }
 
   @override
   Future<void> storeUser(String user) async {
-    // Implement regular user storage
-    print("Storing user");
+    final prefs = await _preferences;
+    await prefs.setString('user_data', user);
   }
 
   @override
   Future<String?> getUser() async {
-    // Implement regular user retrieval
-    print("Getting user");
-    return null;
+    final prefs = await _preferences;
+    return prefs.getString('user_data');
   }
 
   @override
   Future<void> removeUser() async {
-    // Implement regular user removal
-    print("Removing user");
+    final prefs = await _preferences;
+    await prefs.remove('user_data');
   }
 
   @override
   Future<void> clear() async {
-    // Implement regular storage clear
-    print("Clearing storage");
+    final prefs = await _preferences;
+    await prefs.clear();
   }
+  
+  @override
+  Future<void> storeSecureData(String key, String data) async {
+    // For regular storage, we'll just use SharedPreferences
+    final prefs = await _preferences;
+    await prefs.setString(key, data);
+  }
+
+  @override
+  Future<String?> getSecureData(String key) async {
+    final prefs = await _preferences;
+    return prefs.getString(key);
+  }
+
+  @override
+  Future<void> deleteSecureData(String key) async {
+    final prefs = await _preferences;
+    await prefs.remove(key);
+  }
+}
+
+// Factory để tạo storage phù hợp
+class AuthStorageFactory {
+  static AuthStorage createSecure() => SecureAuthStorage();
+  static AuthStorage createRegular() => RegularAuthStorage();
 }

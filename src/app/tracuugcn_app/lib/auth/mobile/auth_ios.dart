@@ -1,6 +1,6 @@
 import '../auth_manager.dart';
 
-class iOSAuth implements AuthManager {
+class iOSAuth implements AuthProvider {
   @override
   Future<void> authenticate() async {
     // Implement iOS specific authentication logic here

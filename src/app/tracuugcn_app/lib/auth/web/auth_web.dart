@@ -1,6 +1,6 @@
 import '../auth_manager.dart';
 
-class WebAuth implements AuthManager {
+class WebAuth implements AuthProvider {
   @override
   Future<void> authenticate() async {
     // Implement Web specific authentication logic here

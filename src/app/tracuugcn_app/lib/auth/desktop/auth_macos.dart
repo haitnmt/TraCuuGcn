@@ -1,6 +1,6 @@
 import '../auth_manager.dart';
 
-class MacOSAuth implements AuthManager {
+class MacOSAuth implements AuthProvider {
   @override
   Future<void> authenticate() async {
     // Implement MacOS specific authentication logic here

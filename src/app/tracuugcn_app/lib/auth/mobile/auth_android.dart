@@ -1,6 +1,6 @@
 import '../auth_manager.dart';
 
-class AndroidAuth implements AuthManager {
+class AndroidAuth implements AuthProvider {
   @override
   Future<void> authenticate() async {
     // Implement Android specific authentication logic here

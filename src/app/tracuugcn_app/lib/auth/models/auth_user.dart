@@ -48,6 +48,47 @@ class AuthUser {
     );
   }
 
+  // Factory constructor for Keycloak user info
+  factory AuthUser.fromKeycloakUserInfo(Map<String, dynamic> userInfo) {
+    return AuthUser(
+      id: userInfo['sub'] ?? userInfo['id'] ?? '',
+      username: userInfo['preferred_username'] ?? userInfo['username'] ?? '',
+      email: userInfo['email'] ?? '',
+      fullName: userInfo['name'] ?? userInfo['given_name'] ?? '',
+      avatar: userInfo['picture'],
+      roles: _extractKeycloakRoles(userInfo),
+      isActive: userInfo['email_verified'] ?? true,
+    );
+  }
+
+  // Helper method to extract roles from Keycloak token
+  static List<String> _extractKeycloakRoles(Map<String, dynamic> userInfo) {
+    final List<String> roles = [];
+    
+    // Check for roles in realm_access
+    if (userInfo['realm_access'] != null && 
+        userInfo['realm_access']['roles'] != null) {
+      roles.addAll(List<String>.from(userInfo['realm_access']['roles']));
+    }
+    
+    // Check for roles in resource_access
+    if (userInfo['resource_access'] != null) {
+      final resourceAccess = userInfo['resource_access'] as Map<String, dynamic>;
+      for (final clientRoles in resourceAccess.values) {
+        if (clientRoles['roles'] != null) {
+          roles.addAll(List<String>.from(clientRoles['roles']));
+        }
+      }
+    }
+    
+    // Check for groups (if groups are mapped to roles)
+    if (userInfo['groups'] != null) {
+      roles.addAll(List<String>.from(userInfo['groups']));
+    }
+    
+    return roles;
+  }
+
   AuthUser copyWith({
     String? id,
     String? username,
