@@ -1,10 +1,11 @@
 import '../auth_manager.dart';
+import '../models/auth_user.dart';
 
 class AndroidAuth implements AuthProvider {
   @override
-  Future<void> authenticate() async {
+  Future<void> authenticate({String? languageCode}) async {
     // Implement Android specific authentication logic here
-    print("Authenticating on Android...");
+    print("Authenticating on Android... (Language: ${languageCode ?? 'default'})");
     // Example: Use biometric authentication, PIN, or pattern
   }
 
@@ -28,6 +29,14 @@ class AndroidAuth implements AuthProvider {
     // Implement Android specific token retrieval
     print("Getting token on Android...");
     // Example: Retrieve token from secure storage
+    return null; // Temporary return
+  }
+
+  @override
+  Future<AuthUser?> getCurrentUser() async {
+    // Implement Android specific user retrieval
+    print("Getting current user on Android...");
+    // Example: Retrieve user info from secure storage
     return null; // Temporary return
   }
 }

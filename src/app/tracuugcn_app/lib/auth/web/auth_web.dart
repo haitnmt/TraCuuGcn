@@ -1,10 +1,11 @@
 import '../auth_manager.dart';
+import '../models/auth_user.dart';
 
 class WebAuth implements AuthProvider {
   @override
-  Future<void> authenticate() async {
+  Future<void> authenticate({String? languageCode}) async {
     // Implement Web specific authentication logic here
-    print("Authenticating on Web...");
+    print("Authenticating on Web... (Language: ${languageCode ?? 'default'})");
     // Example: Use OAuth, JWT tokens, or browser-based authentication
   }
 
@@ -28,6 +29,14 @@ class WebAuth implements AuthProvider {
     // Implement Web specific token retrieval
     print("Getting token on Web...");
     // Example: Retrieve token from localStorage or cookies
+    return null; // Temporary return
+  }
+
+  @override
+  Future<AuthUser?> getCurrentUser() async {
+    // Implement Web specific user retrieval
+    print("Getting current user on Web...");
+    // Example: Retrieve user info from localStorage or decode JWT
     return null; // Temporary return
   }
 }

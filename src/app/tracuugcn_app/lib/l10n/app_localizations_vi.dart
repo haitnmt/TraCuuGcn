@@ -173,4 +173,38 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get daysAgo => 'ngày trước';
+
+  @override
+  String get loginButton => 'Đăng nhập';
+
+  @override
+  String get loginSuccess => 'Đăng nhập thành công';
+
+  @override
+  String get loginSSOButton => 'Đăng nhập SSO';
+
+  @override
+  String get loginInProgress => 'Đang đăng nhập...';
+
+  @override
+  String get loginFailed => 'Đăng nhập thất bại. Vui lòng thử lại.';
+
+  @override
+  String loginError(String error) {
+    return 'Lỗi đăng nhập: $error';
+  }
+
+  @override
+  String logoutError(String error) {
+    return 'Lỗi đăng xuất: $error';
+  }
+
+  @override
+  String get logoutSuccess => 'Đã đăng xuất thành công';
+
+  @override
+  String get loginFooterText => 'Sử dụng tài khoản SSO của bạn để đăng nhập';
+
+  @override
+  String get checkAuthStatusButton => 'Kiểm tra trạng thái đăng nhập';
 }

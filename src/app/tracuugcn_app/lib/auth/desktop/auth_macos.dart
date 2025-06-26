@@ -1,10 +1,11 @@
 import '../auth_manager.dart';
+import '../models/auth_user.dart';
 
 class MacOSAuth implements AuthProvider {
   @override
-  Future<void> authenticate() async {
+  Future<void> authenticate({String? languageCode}) async {
     // Implement MacOS specific authentication logic here
-    print("Authenticating on MacOS...");
+    print("Authenticating on MacOS... (Language: ${languageCode ?? 'default'})");
     // Example: Use Touch ID, system keychain, or custom dialog
   }
 
@@ -28,6 +29,14 @@ class MacOSAuth implements AuthProvider {
     // Implement MacOS specific token retrieval
     print("Getting token on MacOS...");
     // Example: Retrieve token from keychain
+    return null; // Temporary return
+  }
+
+  @override
+  Future<AuthUser?> getCurrentUser() async {
+    // Implement MacOS specific user retrieval
+    print("Getting current user on MacOS...");
+    // Example: Retrieve user info from keychain
     return null; // Temporary return
   }
 }

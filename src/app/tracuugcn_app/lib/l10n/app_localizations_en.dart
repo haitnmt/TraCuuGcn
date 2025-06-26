@@ -174,4 +174,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daysAgo => 'days ago';
+
+  @override
+  String get loginButton => 'Login';
+
+  @override
+  String get loginSuccess => 'Login successful';
+
+  @override
+  String get loginSSOButton => 'SSO Login';
+
+  @override
+  String get loginInProgress => 'Logging in...';
+
+  @override
+  String get loginFailed => 'Login failed. Please try again.';
+
+  @override
+  String loginError(String error) {
+    return 'Login error: $error';
+  }
+
+  @override
+  String logoutError(String error) {
+    return 'Logout error: $error';
+  }
+
+  @override
+  String get logoutSuccess => 'Logged out successfully';
+
+  @override
+  String get loginFooterText => 'Use your SSO account to login';
+
+  @override
+  String get checkAuthStatusButton => 'Check authentication status';
 }

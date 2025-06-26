@@ -20,6 +20,7 @@ class WindowsAuth implements AuthProvider {
   late final OpenIdConfig _config;
   HttpServer? _callbackServer;
   Completer<Map<String, String>>? _authCompleter;
+  String? _currentLanguageCode;
   
   WindowsAuth() {
     _storage = SecureAuthStorage();
@@ -27,9 +28,13 @@ class WindowsAuth implements AuthProvider {
   }
 
   @override
-  Future<void> authenticate() async {
+  Future<void> authenticate({String? languageCode}) async {
     try {
       debugPrint("[WindowsAuth] Starting authentication...");
+      
+      // Store the language code for use in browser pages
+      _currentLanguageCode = languageCode ?? 'vi';
+      debugPrint("[WindowsAuth] Using language: $_currentLanguageCode");
       
       // Generate secure state parameter
       final state = _generateSecureState();
@@ -160,17 +165,27 @@ class WindowsAuth implements AuthProvider {
   }
   
   /// Get current user information
+  @override
   Future<AuthUser?> getCurrentUser() async {
     try {
+      debugPrint("[WindowsAuth] Getting current user...");
       final userInfoJson = await _storage.getSecureData(_userInfoKey);
+      debugPrint("[WindowsAuth] Retrieved userInfoJson: $userInfoJson");
+      
       if (userInfoJson != null && userInfoJson.isNotEmpty) {
         final userInfo = jsonDecode(userInfoJson);
-        return AuthUser.fromKeycloakUserInfo(userInfo);
+        debugPrint("[WindowsAuth] Parsed userInfo: $userInfo");
+        
+        final authUser = AuthUser.fromKeycloakUserInfo(userInfo);
+        debugPrint("[WindowsAuth] Created AuthUser: $authUser");
+        return authUser;
       }
       
+      debugPrint("[WindowsAuth] No user info found in storage");
       return null;
-    } catch (e) {
+    } catch (e, stackTrace) {
       debugPrint("[WindowsAuth] Get current user error: $e");
+      debugPrint("[WindowsAuth] StackTrace: $stackTrace");
       return null;
     }
   }
@@ -197,29 +212,6 @@ class WindowsAuth implements AuthProvider {
         .join('&');
     
     return '${_config.issuer}protocol/openid-connect/auth?$queryString';
-  }
-  
-  /// Build Keycloak logout URL
-  String? _buildLogoutUrl(String? refreshToken) {
-    try {
-      final params = <String, String>{
-        'redirect_uri': _config.postLogoutRedirectUri ?? _config.redirectUri,
-      };
-      
-      // Add refresh token if available for proper logout
-      if (refreshToken != null && refreshToken.isNotEmpty) {
-        params['refresh_token'] = refreshToken;
-      }
-      
-      final queryString = params.entries
-          .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-          .join('&');
-      
-      return '${_config.issuer}protocol/openid-connect/logout?$queryString';
-    } catch (e) {
-      debugPrint("[WindowsAuth] Error building logout URL: $e");
-      return null;
-    }
   }
   
   /// Start local HTTP server to handle OAuth callback
@@ -272,34 +264,11 @@ class WindowsAuth implements AuthProvider {
       response.headers.set('Content-Type', 'text/html; charset=utf-8');
       
       if (params.containsKey('error')) {
-        // Error response
-        response.write('''
-          <html>
-            <head><title>Authentication Failed</title></head>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h1 style="color: #d32f2f;">Authentication Failed</h1>
-              <p>Error: ${params['error']}</p>
-              <p>Description: ${params['error_description'] ?? 'Unknown error'}</p>
-              <p>You can close this window.</p>
-            </body>
-          </html>
-        ''');
+        // Error response with localized content
+        response.write(_generateErrorHtml(params));
       } else {
-        // Success response
-        response.write('''
-          <html>
-            <head><title>Authentication Successful</title></head>
-            <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
-              <h1 style="color: #4caf50;">Authentication Successful</h1>
-              <p>You have been successfully authenticated. You can close this window.</p>
-              <script>
-                setTimeout(function() {
-                  window.close();
-                }, 2000);
-              </script>
-            </body>
-          </html>
-        ''');
+        // Success response with localized content
+        response.write(_generateSuccessHtml());
       }
       
       response.close();
@@ -439,6 +408,7 @@ class WindowsAuth implements AuthProvider {
   Future<Map<String, dynamic>> _getUserInfo(String accessToken) async {
     try {
       final userInfoEndpoint = '${_config.issuer}protocol/openid-connect/userinfo';
+      debugPrint("[WindowsAuth] Calling UserInfo endpoint: $userInfoEndpoint");
       
       final response = await http.get(
         Uri.parse(userInfoEndpoint),
@@ -449,13 +419,18 @@ class WindowsAuth implements AuthProvider {
       );
       
       debugPrint("[WindowsAuth] UserInfo response status: ${response.statusCode}");
+      debugPrint("[WindowsAuth] UserInfo response body: ${response.body}");
       
       if (response.statusCode != 200) {
         debugPrint("[WindowsAuth] UserInfo request failed: ${response.body}");
         throw Exception('UserInfo request failed: ${response.statusCode}');
       }
+
+      final userInfo = jsonDecode(response.body) as Map<String, dynamic>;
+      debugPrint("[WindowsAuth] Parsed UserInfo: $userInfo");
+      debugPrint("[WindowsAuth] Available keys: ${userInfo.keys.toList()}");
       
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      return userInfo;
     } catch (e) {
       debugPrint("[WindowsAuth] UserInfo error: $e");
       rethrow;
@@ -658,6 +633,336 @@ class WindowsAuth implements AuthProvider {
       _authCompleter = null;
     } catch (e) {
       debugPrint("[WindowsAuth] Cleanup error: $e");
+    }
+  }
+  
+  /// Generate localized success HTML page based on current language
+  String _generateSuccessHtml() {
+    final isVietnamese = _currentLanguageCode == 'vi';
+    
+    if (isVietnamese) {
+      return '''
+        <html>
+          <head>
+            <title>Đăng nhập thành công</title>
+            <meta charset="utf-8">
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+              }
+              .container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 600px;
+              }
+              .success-icon {
+                font-size: 64px;
+                color: #4caf50;
+                margin-bottom: 20px;
+              }
+              .message {
+                font-size: 18px;
+                margin: 15px 0;
+                opacity: 0.9;
+              }
+              .note {
+                font-size: 14px;
+                opacity: 0.7;
+                margin-top: 30px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                text-align: left;
+              }
+              .divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.3);
+                margin: 20px 0;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="success-icon">✅</div>
+              <h1 style="color: #4caf50; margin: 20px 0;">Đăng nhập thành công!</h1>
+              
+              <div class="divider"></div>
+              
+              <p class="message">Bạn đã đăng nhập thành công vào hệ thống Tra cứu GCN.</p>
+              <p class="message">Quay lại ứng dụng để tiếp tục sử dụng.</p>
+              
+              <div class="note">
+                <strong>📌 Hướng dẫn:</strong><br>
+                Bạn có thể đóng tab này và quay lại ứng dụng để sử dụng các tính năng.
+              </div>
+            </div>
+          </body>
+        </html>
+      ''';
+    } else {
+      return '''
+        <html>
+          <head>
+            <title>Login Successful</title>
+            <meta charset="utf-8">
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+              }
+              .container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 600px;
+              }
+              .success-icon {
+                font-size: 64px;
+                color: #4caf50;
+                margin-bottom: 20px;
+              }
+              .message {
+                font-size: 18px;
+                margin: 15px 0;
+                opacity: 0.9;
+              }
+              .note {
+                font-size: 14px;
+                opacity: 0.7;
+                margin-top: 30px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                text-align: left;
+              }
+              .divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.3);
+                margin: 20px 0;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="success-icon">✅</div>
+              <h1 style="color: #4caf50; margin: 20px 0;">Login Successful!</h1>
+              
+              <div class="divider"></div>
+              
+              <p class="message">You have successfully logged into the Certificate Lookup System.</p>
+              <p class="message">Return to the application to continue using.</p>
+              
+              <div class="note">
+                <strong>📌 Instructions:</strong><br>
+                You can close this tab and return to the application to use the features.
+              </div>
+            </div>
+          </body>
+        </html>
+      ''';
+    }
+  }
+  
+  /// Generate localized error HTML page based on current language
+  String _generateErrorHtml(Map<String, String> params) {
+    final isVietnamese = _currentLanguageCode == 'vi';
+    final error = params['error'] ?? 'unknown_error';
+    final errorDesc = params['error_description'] ?? (isVietnamese ? 'Lỗi không xác định' : 'Unknown error');
+    
+    if (isVietnamese) {
+      return '''
+        <html>
+          <head>
+            <title>Đăng nhập thất bại</title>
+            <meta charset="utf-8">
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #ff7b7b 0%, #d32f2f 100%);
+                color: white;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+              }
+              .container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 600px;
+              }
+              .error-icon {
+                font-size: 64px;
+                color: #ff5252;
+                margin-bottom: 20px;
+              }
+              .error-details {
+                background: rgba(0, 0, 0, 0.2);
+                padding: 15px;
+                border-radius: 8px;
+                margin: 20px 0;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+              }
+              .note {
+                font-size: 14px;
+                opacity: 0.8;
+                margin-top: 20px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                text-align: left;
+              }
+              .divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.3);
+                margin: 15px 0;
+              }
+              .message {
+                margin: 10px 0;
+                opacity: 0.9;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="error-icon">❌</div>
+              <h1 style="color: #ff5252; margin: 20px 0;">Đăng nhập thất bại</h1>
+              
+              <div class="divider"></div>
+              
+              <p class="message">Đã xảy ra lỗi trong quá trình đăng nhập:</p>
+              
+              <div class="error-details">
+                <strong>Lỗi:</strong> $error<br>
+                <strong>Mô tả:</strong> $errorDesc
+              </div>
+              
+              <div class="note">
+                <strong>💡 Hướng dẫn:</strong><br>
+                Vui lòng đóng tab này và thử đăng nhập lại trong ứng dụng.
+              </div>
+            </div>
+          </body>
+        </html>
+      ''';
+    } else {
+      return '''
+        <html>
+          <head>
+            <title>Login Failed</title>
+            <meta charset="utf-8">
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                text-align: center;
+                padding: 50px;
+                background: linear-gradient(135deg, #ff7b7b 0%, #d32f2f 100%);
+                color: white;
+                margin: 0;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+              }
+              .container {
+                background: rgba(255, 255, 255, 0.1);
+                padding: 40px;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+                max-width: 600px;
+              }
+              .error-icon {
+                font-size: 64px;
+                color: #ff5252;
+                margin-bottom: 20px;
+              }
+              .error-details {
+                background: rgba(0, 0, 0, 0.2);
+                padding: 15px;
+                border-radius: 8px;
+                margin: 20px 0;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+              }
+              .note {
+                font-size: 14px;
+                opacity: 0.8;
+                margin-top: 20px;
+                padding: 15px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                text-align: left;
+              }
+              .divider {
+                height: 1px;
+                background: rgba(255, 255, 255, 0.3);
+                margin: 15px 0;
+              }
+              .message {
+                margin: 10px 0;
+                opacity: 0.9;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="error-icon">❌</div>
+              <h1 style="color: #ff5252; margin: 20px 0;">Login Failed</h1>
+              
+              <div class="divider"></div>
+              
+              <p class="message">An error occurred during the login process:</p>
+              
+              <div class="error-details">
+                <strong>Error:</strong> $error<br>
+                <strong>Description:</strong> $errorDesc
+              </div>
+              
+              <div class="note">
+                <strong>💡 Instructions:</strong><br>
+                Please close this tab and try logging in again from the application.
+              </div>
+            </div>
+          </body>
+        </html>
+      ''';
     }
   }
 }

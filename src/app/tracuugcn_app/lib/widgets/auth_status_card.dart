@@ -41,10 +41,10 @@ class AuthStatusCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12.0),
               decoration: BoxDecoration(
-                color: _getStatusColor().withOpacity(0.1),
+                color: _getStatusColor().withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8.0),
                 border: Border.all(
-                  color: _getStatusColor().withOpacity(0.3),
+                  color: _getStatusColor().withValues(alpha: 0.3),
                 ),
               ),
               child: Row(

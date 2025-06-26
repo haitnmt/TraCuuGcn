@@ -1,10 +1,11 @@
 import '../auth_manager.dart';
+import '../models/auth_user.dart';
 
 class iOSAuth implements AuthProvider {
   @override
-  Future<void> authenticate() async {
+  Future<void> authenticate({String? languageCode}) async {
     // Implement iOS specific authentication logic here
-    print("Authenticating on iOS...");
+    print("Authenticating on iOS... (Language: ${languageCode ?? 'default'})");
     // Example: Use Touch ID, Face ID, or passcode
   }
 
@@ -28,6 +29,14 @@ class iOSAuth implements AuthProvider {
     // Implement iOS specific token retrieval
     print("Getting token on iOS...");
     // Example: Retrieve token from keychain
+    return null; // Temporary return
+  }
+
+  @override
+  Future<AuthUser?> getCurrentUser() async {
+    // Implement iOS specific user retrieval
+    print("Getting current user on iOS...");
+    // Example: Retrieve user info from keychain
     return null; // Temporary return
   }
 }

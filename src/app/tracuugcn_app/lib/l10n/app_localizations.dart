@@ -415,6 +415,66 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'ngày trước'**
   String get daysAgo;
+
+  /// Login button text
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập'**
+  String get loginButton;
+
+  /// Login success message
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập thành công'**
+  String get loginSuccess;
+
+  /// SSO login button text
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập SSO'**
+  String get loginSSOButton;
+
+  /// Login in progress text
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang đăng nhập...'**
+  String get loginInProgress;
+
+  /// Login failed message
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập thất bại. Vui lòng thử lại.'**
+  String get loginFailed;
+
+  /// Login error message with error details
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng nhập: {error}'**
+  String loginError(String error);
+
+  /// Logout error message with error details
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi đăng xuất: {error}'**
+  String logoutError(String error);
+
+  /// Logout success message
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã đăng xuất thành công'**
+  String get logoutSuccess;
+
+  /// Login footer text
+  ///
+  /// In vi, this message translates to:
+  /// **'Sử dụng tài khoản SSO của bạn để đăng nhập'**
+  String get loginFooterText;
+
+  /// Check authentication status button text
+  ///
+  /// In vi, this message translates to:
+  /// **'Kiểm tra trạng thái đăng nhập'**
+  String get checkAuthStatusButton;
 }
 
 class _AppLocalizationsDelegate

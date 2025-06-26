@@ -211,5 +211,57 @@
   "daysAgo": "ngày trước",
   "@daysAgo": {
     "description": "Days ago time indicator"
+  },
+  "loginButton": "Đăng nhập",
+  "@loginButton": {
+    "description": "Login button text"
+  },
+  "loginSuccess": "Đăng nhập thành công",
+  "@loginSuccess": {
+    "description": "Login success message"
+  },
+  "loginSSOButton": "Đăng nhập SSO",
+  "@loginSSOButton": {
+    "description": "SSO login button text"
+  },
+  "loginInProgress": "Đang đăng nhập...",
+  "@loginInProgress": {
+    "description": "Login in progress text"
+  },
+  "loginFailed": "Đăng nhập thất bại. Vui lòng thử lại.",
+  "@loginFailed": {
+    "description": "Login failed message"
+  },
+  "loginError": "Lỗi đăng nhập: {error}",
+  "@loginError": {
+    "description": "Login error message with error details",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "logoutError": "Lỗi đăng xuất: {error}",
+  "@logoutError": {
+    "description": "Logout error message with error details",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "description": "Error details"
+      }
+    }
+  },
+  "logoutSuccess": "Đã đăng xuất thành công",
+  "@logoutSuccess": {
+    "description": "Logout success message"
+  },
+  "loginFooterText": "Sử dụng tài khoản SSO của bạn để đăng nhập",
+  "@loginFooterText": {
+    "description": "Login footer text"
+  },
+  "checkAuthStatusButton": "Kiểm tra trạng thái đăng nhập",
+  "@checkAuthStatusButton": {
+    "description": "Check authentication status button text"
   }
 }

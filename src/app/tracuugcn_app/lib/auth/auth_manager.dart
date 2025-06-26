@@ -5,13 +5,15 @@ import 'mobile/auth_ios.dart';
 import 'desktop/auth_windows.dart';
 import 'desktop/auth_macos.dart';
 import 'web/auth_web.dart';
+import 'models/auth_user.dart';
 
 // Abstract interface for platform-specific auth implementations
 abstract class AuthProvider {
-  Future<void> authenticate();
+  Future<void> authenticate({String? languageCode});
   Future<void> logout();
   Future<bool> isAuthenticated();
   Future<String?> getToken();
+  Future<AuthUser?> getCurrentUser(); // Thêm method này vào interface
 }
 
 // AuthManager acts as a bridge between platforms and the main app
@@ -33,8 +35,8 @@ class AuthManager {
   }
   
   // Bridge methods that delegate to platform-specific implementation
-  Future<void> authenticate() async {
-    await _authProvider.authenticate();
+  Future<void> authenticate({String? languageCode}) async {
+    await _authProvider.authenticate(languageCode: languageCode);
   }
   
   Future<void> logout() async {
@@ -47,6 +49,10 @@ class AuthManager {
   
   Future<String?> getToken() async {
     return await _authProvider.getToken();
+  }
+  
+  Future<AuthUser?> getCurrentUser() async {
+    return await _authProvider.getCurrentUser();
   }
   
   // Getter to access the auth provider (for platform-specific features)
