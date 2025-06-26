@@ -64,6 +64,7 @@ class OpenIdAuthService {
   Future<AuthResult> login({
     Map<String, String>? additionalParameters,
     List<String>? scopes,
+    String? languageCode,
   }) async {
     if (_currentConfig == null) {
       return AuthResult.failure(
@@ -73,11 +74,32 @@ class OpenIdAuthService {
     }
 
     try {
-      // Merge additional parameters
-      final allParams = {
+      // Start with config's additional parameters
+      final allParams = <String, String>{
         ..._currentConfig!.additionalParameters ?? {},
         ...additionalParameters ?? {},
       };
+
+      // Add locale parameters if language code is provided
+      if (languageCode != null) {
+        // Map app language codes to Keycloak locale codes
+        String keycloakLocale;
+        switch (languageCode) {
+          case 'vi':
+            keycloakLocale = 'vi';
+            break;
+          case 'en':
+            keycloakLocale = 'en';
+            break;
+          default:
+            keycloakLocale = 'vi'; // Default to Vietnamese
+        }
+        
+        allParams['ui_locales'] = keycloakLocale;
+        allParams['kc_locale'] = keycloakLocale; // Alternative parameter for some Keycloak versions
+        
+        debugPrint("[OpenIdAuthService] Adding locale parameters: ui_locales=$keycloakLocale, kc_locale=$keycloakLocale");
+      }
 
       // Use provided scopes or default from config
       final authScopes = scopes ?? _currentConfig!.scopes;

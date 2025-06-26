@@ -207,6 +207,27 @@ class WindowsAuth implements AuthProvider {
       'state': state,
     };
     
+    // Add locale parameter if language code is available
+    if (_currentLanguageCode != null) {
+      // Map app language codes to Keycloak locale codes
+      String keycloakLocale;
+      switch (_currentLanguageCode) {
+        case 'vi':
+          keycloakLocale = 'vi';
+          break;
+        case 'en':
+          keycloakLocale = 'en';
+          break;
+        default:
+          keycloakLocale = 'vi'; // Default to Vietnamese
+      }
+      
+      params['ui_locales'] = keycloakLocale;
+      params['kc_locale'] = keycloakLocale; // Alternative parameter for some Keycloak versions
+      
+      debugPrint("[WindowsAuth] Adding locale parameters: ui_locales=$keycloakLocale, kc_locale=$keycloakLocale");
+    }
+    
     final queryString = params.entries
         .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
         .join('&');
