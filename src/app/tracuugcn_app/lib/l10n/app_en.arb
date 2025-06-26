@@ -208,6 +208,14 @@
   "@hoursAgo": {
     "description": "Chỉ báo thời gian giờ trước"
   },
+  "minutesAgo": "minutes ago",
+  "@minutesAgo": {
+    "description": "Chỉ báo thời gian phút trước"
+  },
+  "justNow": "Just now",
+  "@justNow": {
+    "description": "Chỉ báo thời gian vừa xong"
+  },
   "daysAgo": "days ago",
   "@daysAgo": {
     "description": "Chỉ báo thời gian ngày trước"
@@ -263,5 +271,21 @@
   "checkAuthStatusButton": "Check authentication status",
   "@checkAuthStatusButton": {
     "description": "Văn bản nút kiểm tra trạng thái xác thực"
+  },
+  "defaultUserName": "User",
+  "@defaultUserName": {
+    "description": "Tên hiển thị mặc định của người dùng"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Nhãn email trong thông tin người dùng"
+  },
+  "roleLabel": "Role",
+  "@roleLabel": {
+    "description": "Nhãn vai trò trong thông tin người dùng"
+  },
+  "lastLoginLabel": "Last login",
+  "@lastLoginLabel": {
+    "description": "Nhãn đăng nhập lần cuối trong thông tin người dùng"
   }
 }

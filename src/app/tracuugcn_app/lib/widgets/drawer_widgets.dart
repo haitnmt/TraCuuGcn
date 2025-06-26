@@ -21,8 +21,6 @@ class DrawerWidgets {
             Expanded(
               child: _buildSearchHistorySection(context, isSmallScreen),
             ),
-            // Language Selection
-            _buildLanguageSection(context),
             // Copyright with About icon
             _buildCopyrightSection(context),
           ],
@@ -149,81 +147,6 @@ class DrawerWidgets {
       onTap: () {
         // TODO: Implement clear history functionality
         Navigator.pop(context);
-      },
-    );
-  }
-
-  /// Build language selection section
-  static Widget _buildLanguageSection(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
-    final languageService = Provider.of<LanguageService>(context);
-
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey.shade300)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            const Icon(Icons.language, color: AppConstants.primaryColor),
-            const SizedBox(width: 16),
-            Text(
-              localizations.languageMenuItem,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            _buildLanguageDropdown(context, localizations, languageService),
-          ],
-        ),
-      ),
-    );
-  }
-
-  /// Build language dropdown
-  static Widget _buildLanguageDropdown(
-    BuildContext context,
-    AppLocalizations localizations,
-    LanguageService languageService,
-  ) {
-    return DropdownButton<Locale>(
-      value: languageService.locale,
-      underline: Container(),
-      icon: const Icon(
-        Icons.arrow_drop_down,
-        color: AppConstants.primaryColor,
-      ),
-      items: [
-        DropdownMenuItem<Locale>(
-          value: const Locale('vi', 'VN'),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('🇻🇳', style: TextStyle(fontSize: 18)),
-              const SizedBox(width: 8),
-              Text(localizations.vietnamese),
-            ],
-          ),
-        ),
-        DropdownMenuItem<Locale>(
-          value: const Locale('en', 'US'),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('🇺🇸', style: TextStyle(fontSize: 18)),
-              const SizedBox(width: 8),
-              Text(localizations.english),
-            ],
-          ),
-        ),
-      ],
-      onChanged: (Locale? newLocale) {
-        if (newLocale != null) {
-          languageService.setLanguage(newLocale);
-        }
       },
     );
   }

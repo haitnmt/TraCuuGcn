@@ -172,6 +172,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get hoursAgo => 'giờ trước';
 
   @override
+  String get minutesAgo => 'phút trước';
+
+  @override
+  String get justNow => 'Vừa xong';
+
+  @override
   String get daysAgo => 'ngày trước';
 
   @override
@@ -207,4 +213,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get checkAuthStatusButton => 'Kiểm tra trạng thái đăng nhập';
+
+  @override
+  String get defaultUserName => 'Người dùng';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get roleLabel => 'Vai trò';
+
+  @override
+  String get lastLoginLabel => 'Đăng nhập';
 }

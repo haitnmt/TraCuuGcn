@@ -173,6 +173,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hoursAgo => 'hours ago';
 
   @override
+  String get minutesAgo => 'minutes ago';
+
+  @override
+  String get justNow => 'Just now';
+
+  @override
   String get daysAgo => 'days ago';
 
   @override
@@ -208,4 +214,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get checkAuthStatusButton => 'Check authentication status';
+
+  @override
+  String get defaultUserName => 'User';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get roleLabel => 'Role';
+
+  @override
+  String get lastLoginLabel => 'Last login';
 }

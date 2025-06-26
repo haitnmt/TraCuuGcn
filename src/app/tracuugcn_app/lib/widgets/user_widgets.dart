@@ -61,7 +61,7 @@ class UserWidgets {
                         children: [
                           // Display name (thay cho fullName)
                           Text(
-                            currentUser?.effectiveDisplayName ?? 'Người dùng',
+                            currentUser?.effectiveDisplayName ?? localizations.defaultUserName,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -91,22 +91,22 @@ class UserWidgets {
                 if (currentUser?.email != null)
                   _buildInfoRow(
                     Icons.email_outlined,
-                    'Email',
+                    localizations.emailLabel,
                     currentUser!.email,
                   ),
                 
                 if (currentUser?.roles != null && currentUser!.roles.isNotEmpty)
                   _buildInfoRow(
                     Icons.security_outlined,
-                    'Vai trò',
+                    localizations.roleLabel,
                     currentUser.roles.join(', '),
                   ),
                 
                 if (currentUser?.lastLogin != null)
                   _buildInfoRow(
                     Icons.access_time_outlined,
-                    'Đăng nhập lần cuối',
-                    currentUser!.formattedLastLogin,
+                    localizations.lastLoginLabel,
+                    _formatLastLogin(context, currentUser!.lastLogin!),
                   ),
               ],
             ),
@@ -165,6 +165,23 @@ class UserWidgets {
         ],
       ),
     );
+  }
+
+  /// Format last login time with localization
+  static String _formatLastLogin(BuildContext context, DateTime lastLogin) {
+    final localizations = AppLocalizations.of(context)!;
+    final now = DateTime.now();
+    final difference = now.difference(lastLogin);
+    
+    if (difference.inDays > 0) {
+      return '${difference.inDays} ${localizations.daysAgo}';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours} ${localizations.hoursAgo}';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes} ${localizations.minutesAgo}';
+    } else {
+      return localizations.justNow;
+    }
   }
 
   /// Get user initials for avatar

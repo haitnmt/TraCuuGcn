@@ -208,6 +208,14 @@
   "@hoursAgo": {
     "description": "Hours ago time indicator"
   },
+  "minutesAgo": "phút trước",
+  "@minutesAgo": {
+    "description": "Minutes ago time indicator"
+  },
+  "justNow": "Vừa xong",
+  "@justNow": {
+    "description": "Just now time indicator"
+  },
   "daysAgo": "ngày trước",
   "@daysAgo": {
     "description": "Days ago time indicator"
@@ -263,5 +271,21 @@
   "checkAuthStatusButton": "Kiểm tra trạng thái đăng nhập",
   "@checkAuthStatusButton": {
     "description": "Check authentication status button text"
+  },
+  "defaultUserName": "Người dùng",
+  "@defaultUserName": {
+    "description": "Default user display name"
+  },
+  "emailLabel": "Email",
+  "@emailLabel": {
+    "description": "Email label in user info"
+  },
+  "roleLabel": "Vai trò",
+  "@roleLabel": {
+    "description": "Role label in user info"
+  },
+  "lastLoginLabel": "Đăng nhập",
+  "@lastLoginLabel": {
+    "description": "Last login label in user info"
   }
 }

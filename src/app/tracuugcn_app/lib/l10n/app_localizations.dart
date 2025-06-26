@@ -410,6 +410,18 @@ abstract class AppLocalizations {
   /// **'giờ trước'**
   String get hoursAgo;
 
+  /// Minutes ago time indicator
+  ///
+  /// In vi, this message translates to:
+  /// **'phút trước'**
+  String get minutesAgo;
+
+  /// Just now time indicator
+  ///
+  /// In vi, this message translates to:
+  /// **'Vừa xong'**
+  String get justNow;
+
   /// Days ago time indicator
   ///
   /// In vi, this message translates to:
@@ -475,6 +487,30 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Kiểm tra trạng thái đăng nhập'**
   String get checkAuthStatusButton;
+
+  /// Default user display name
+  ///
+  /// In vi, this message translates to:
+  /// **'Người dùng'**
+  String get defaultUserName;
+
+  /// Email label in user info
+  ///
+  /// In vi, this message translates to:
+  /// **'Email'**
+  String get emailLabel;
+
+  /// Role label in user info
+  ///
+  /// In vi, this message translates to:
+  /// **'Vai trò'**
+  String get roleLabel;
+
+  /// Last login label in user info
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng nhập'**
+  String get lastLoginLabel;
 }
 
 class _AppLocalizationsDelegate
