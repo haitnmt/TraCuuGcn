@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
     
     return AppBar(
       title: Text(localizations.appTitle),
-      centerTitle: true,
+      centerTitle: false,
       backgroundColor: AppConstants.primaryColor,
       foregroundColor: Colors.white,
       // Explicitly ensure leading icon is shown (hamburger menu for left drawer)
@@ -102,7 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       // Language switch
       _buildLanguageSwitch(),
-      const SizedBox(width: 8),
       // User popup menu
       Padding(
         padding: const EdgeInsets.only(right: 8.0),
@@ -120,7 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return [
       // Language switch
       _buildLanguageSwitch(),
-      const SizedBox(width: 8),
       // Login button
       Padding(
         padding: const EdgeInsets.only(right: 8.0),
