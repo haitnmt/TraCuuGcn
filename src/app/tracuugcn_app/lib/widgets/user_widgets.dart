@@ -12,18 +12,6 @@ class UserWidgets {
   ) {
     final localizations = AppLocalizations.of(context)!;
     
-    // Debug logging for user info
-    print("[UserPopup] Building popup for user: $currentUser");
-    if (currentUser != null) {
-      print("[UserPopup] user.displayName: '${currentUser.displayName}'");
-      print("[UserPopup] user.fullName: '${currentUser.fullName}'");
-      print("[UserPopup] user.username: '${currentUser.username}'");
-      print("[UserPopup] user.email: '${currentUser.email}'");
-      print("[UserPopup] user.effectiveDisplayName: '${currentUser.effectiveDisplayName}'");
-    } else {
-      print("[UserPopup] currentUser is null!");
-    }
-    
     return PopupMenuButton<String>(
       icon: CircleAvatar(
         backgroundColor: Colors.white,

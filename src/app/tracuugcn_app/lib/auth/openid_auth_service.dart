@@ -54,7 +54,7 @@ class OpenIdAuthService {
       await _restoreSession();
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to initialize OpenID service: $e');
+        debugPrint('Failed to initialize OpenID service: $e');
       }
       rethrow;
     }
@@ -220,7 +220,7 @@ class OpenIdAuthService {
         } catch (e) {
           // Continue with local logout even if remote logout fails
           if (kDebugMode) {
-            print('Remote logout failed: $e');
+            debugPrint('Remote logout failed: $e');
           }
         }
       }
@@ -291,7 +291,7 @@ class OpenIdAuthService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to fetch user info: $e');
+        debugPrint('Failed to fetch user info: $e');
       }
     }
   }
@@ -334,7 +334,7 @@ class OpenIdAuthService {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('Failed to restore session: $e');
+        debugPrint('Failed to restore session: $e');
       }
       // Clear corrupted data
       await _clearStorage();
@@ -406,14 +406,14 @@ class AuthExampleUsage {
     try {
       final result = await _authService.login();
       if (result.success) {
-        print('Login successful: ${result.message}');
+        debugPrint('Login successful: ${result.message}');
         return true;
       } else {
-        print('Login failed: ${result.message}');
+        debugPrint('Login failed: ${result.message}');
         return false;
       }
     } catch (e) {
-      print('Login error: $e');
+      debugPrint('Login error: $e');
       return false;
     }
   }
@@ -424,7 +424,7 @@ class AuthExampleUsage {
       final result = await _authService.refreshToken();
       return result.success;
     } catch (e) {
-      print('Token refresh error: $e');
+      debugPrint('Token refresh error: $e');
       return false;
     }
   }
@@ -435,7 +435,7 @@ class AuthExampleUsage {
       final result = await _authService.logout();
       return result.success;
     } catch (e) {
-      print('Logout error: $e');
+      debugPrint('Logout error: $e');
       return false;
     }
   }
@@ -453,6 +453,6 @@ class AuthExampleUsage {
   /// Print debug information
   static void printDebugInfo() {
     final debugInfo = _authService.getDebugInfo();
-    print('Auth Debug Info: ${jsonEncode(debugInfo)}');
+    debugPrint('Auth Debug Info: ${jsonEncode(debugInfo)}');
   }
 }

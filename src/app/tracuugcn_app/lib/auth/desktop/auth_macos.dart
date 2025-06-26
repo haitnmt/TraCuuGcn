@@ -4,39 +4,36 @@ import '../models/auth_user.dart';
 class MacOSAuth implements AuthProvider {
   @override
   Future<void> authenticate({String? languageCode}) async {
-    // Implement MacOS specific authentication logic here
-    print("Authenticating on MacOS... (Language: ${languageCode ?? 'default'})");
+    // TODO: Implement MacOS specific authentication logic here
     // Example: Use Touch ID, system keychain, or custom dialog
+    throw UnimplementedError('MacOS authentication not implemented yet');
   }
 
   @override
   Future<void> logout() async {
-    // Implement MacOS specific logout logic here
-    print("Logging out on MacOS...");
+    // TODO: Implement MacOS specific logout logic here
     // Example: Clear keychain, revoke tokens
+    throw UnimplementedError('MacOS logout not implemented yet');
   }
 
   @override
   Future<bool> isAuthenticated() async {
-    // Implement MacOS specific authentication check
-    print("Checking authentication status on MacOS...");
+    // TODO: Implement MacOS specific authentication check
     // Example: Check keychain, validate user session
-    return false; // Temporary return
+    return false;
   }
 
   @override
   Future<String?> getToken() async {
-    // Implement MacOS specific token retrieval
-    print("Getting token on MacOS...");
+    // TODO: Implement MacOS specific token retrieval
     // Example: Retrieve token from keychain
-    return null; // Temporary return
+    return null;
   }
 
   @override
   Future<AuthUser?> getCurrentUser() async {
-    // Implement MacOS specific user retrieval
-    print("Getting current user on MacOS...");
+    // TODO: Implement MacOS specific user retrieval
     // Example: Retrieve user info from keychain
-    return null; // Temporary return
+    return null;
   }
 }

@@ -28,7 +28,7 @@ class AuthManager {
   AuthProvider _createAuthProvider() {
     if (kIsWeb) return WebAuth();
     if (Platform.isAndroid) return AndroidAuth();
-    if (Platform.isIOS) return iOSAuth();
+    if (Platform.isIOS) return IOSAuth();
     if (Platform.isWindows) return WindowsAuth();
     if (Platform.isMacOS) return MacOSAuth();
     throw UnimplementedError('Platform not supported');

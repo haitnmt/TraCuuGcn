@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 // User model cho hệ thống xác thực
 class AuthUser {
   final String id;
@@ -73,19 +75,6 @@ class AuthUser {
                          userInfo['username'] ?? 
                          'User';
       
-      // Debug logging - show available keys and values
-      print("[AuthUser] Parsing Keycloak userInfo:");
-      print("[AuthUser] Available keys: ${userInfo.keys.toList()}");
-      print("[AuthUser] display_name: ${userInfo['display_name']}");
-      print("[AuthUser] name: ${userInfo['name']}");
-      print("[AuthUser] given_name: ${userInfo['given_name']}");
-      print("[AuthUser] family_name: ${userInfo['family_name']}");
-      print("[AuthUser] preferred_username: ${userInfo['preferred_username']}");
-      print("[AuthUser] computed fullName: $fullName");
-      print("[AuthUser] computed displayName: $displayName");
-      print("[AuthUser] email_verified type: ${userInfo['email_verified'].runtimeType}");
-      print("[AuthUser] email_verified value: ${userInfo['email_verified']}");
-      
       // Safe parsing của email_verified
       bool isActive = true;
       final emailVerified = userInfo['email_verified'];
@@ -109,11 +98,13 @@ class AuthUser {
         lastLogin: DateTime.now(), // Set current time as last login
       );
       
-      print("[AuthUser] Created AuthUser: $authUser");
       return authUser;
-    } catch (e, stackTrace) {
-      print("[AuthUser] Error parsing Keycloak userInfo: $e");
-      print("[AuthUser] StackTrace: $stackTrace");
+    } catch (e) {
+      // Log error for debugging in development mode only
+      assert(() {
+        debugPrint("[AuthUser] Error parsing Keycloak userInfo: $e");
+        return true;
+      }());
       rethrow;
     }
   }

@@ -4,39 +4,36 @@ import '../models/auth_user.dart';
 class AndroidAuth implements AuthProvider {
   @override
   Future<void> authenticate({String? languageCode}) async {
-    // Implement Android specific authentication logic here
-    print("Authenticating on Android... (Language: ${languageCode ?? 'default'})");
+    // TODO: Implement Android specific authentication logic here
     // Example: Use biometric authentication, PIN, or pattern
+    throw UnimplementedError('Android authentication not implemented yet');
   }
 
   @override
   Future<void> logout() async {
-    // Implement Android specific logout logic here
-    print("Logging out on Android...");
+    // TODO: Implement Android specific logout logic here
     // Example: Clear secure storage, revoke tokens
+    throw UnimplementedError('Android logout not implemented yet');
   }
 
   @override
   Future<bool> isAuthenticated() async {
-    // Implement Android specific authentication check
-    print("Checking authentication status on Android...");
+    // TODO: Implement Android specific authentication check
     // Example: Check if user is logged in, validate tokens
-    return false; // Temporary return
+    return false;
   }
 
   @override
   Future<String?> getToken() async {
-    // Implement Android specific token retrieval
-    print("Getting token on Android...");
+    // TODO: Implement Android specific token retrieval
     // Example: Retrieve token from secure storage
-    return null; // Temporary return
+    return null;
   }
 
   @override
   Future<AuthUser?> getCurrentUser() async {
-    // Implement Android specific user retrieval
-    print("Getting current user on Android...");
+    // TODO: Implement Android specific user retrieval
     // Example: Retrieve user info from secure storage
-    return null; // Temporary return
+    return null;
   }
 }
