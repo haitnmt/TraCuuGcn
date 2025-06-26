@@ -1,6 +1,15 @@
 # TraCuuGcn - Global .gitignore
 # This file contains only essential global ignore rules
 
+# Configuration files with sensitive data
+configs/*.ini
+!configs/*.ini.example
+!configs/README.md
+
+# OpenID config files (contain secrets)
+**/openid.ini
+!**/openid.ini.example
+
 # macOS system files (essential to ignore)
 .DS_Store
 .DS_Store?

@@ -44,5 +44,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Configuration files
-lib/auth/config/openId_config.dart
+# Initialization files
+**/configs/*.ini

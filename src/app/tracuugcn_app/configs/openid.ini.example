@@ -1,0 +1,28 @@
+OpenId: 
+  # OpenID Connect URLs for the application
+  # Copy this file to openid.ini and update with your actual values
+  
+  # SSO/Keycloak Configuration
+  ssoIssuer: https://sso.example.com/realms/your-realm/
+  ssoClientId: your-client-id
+  ssoClientSecret: your-client-secret
+
+  # Azure AD Configuration  
+  azureIssuer: https://login.microsoftonline.com/YOUR_TENANT_ID/v2.0
+  azureClientId: your-azure-client-id
+  azureClientSecret: your-azure-client-secret
+
+  # Google OAuth Configuration
+  googleIssuer: https://accounts.google.com
+  googleClientId: your-google-client-id.apps.googleusercontent.com
+  googleClientSecret: your-google-client-secret
+
+  # Apple OAuth Configuration
+  appleIssuer: https://appleid.apple.com
+  appleClientId: com.yourcompany.yourapp
+  appleClientSecret: your-apple-client-secret
+
+  # Application URLs
+  DesktopLocalUrl: http://localhost:8080
+  WebUrl: http://localhost:3000
+  AppAuthRedirectScheme: com.yourcompany.yourapp

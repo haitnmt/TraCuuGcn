@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:http/http.dart' as http;
 import '../auth_manager.dart';
-import '../config/openid_config.dart';
+import '../auth_openid.dart';
 import '../storage/auth_storage.dart';
 import '../models/auth_user.dart';
 
@@ -17,20 +17,27 @@ class WindowsAuth implements AuthProvider {
   static const String _stateKey = 'windows_auth_state';
   
   late final AuthStorage _storage;
-  late final OpenIdConfig _config;
+  OpenIdConfig? _config;
   HttpServer? _callbackServer;
   Completer<Map<String, String>>? _authCompleter;
   String? _currentLanguageCode;
   
   WindowsAuth() {
     _storage = SecureAuthStorage();
-    _config = AutoOpenIdConfig.optimized(provider: 'keycloak');
+  }
+
+  /// Initialize the configuration asynchronously
+  Future<void> _initializeConfig() async {
+    _config ??= await AutoOpenIdConfig.optimized(provider: 'keycloak');
   }
 
   @override
   Future<void> authenticate({String? languageCode}) async {
     try {
       debugPrint("[WindowsAuth] Starting authentication...");
+      
+      // Initialize configuration first
+      await _initializeConfig();
       
       // Store the language code for use in browser pages
       _currentLanguageCode = languageCode ?? 'vi';
@@ -199,11 +206,12 @@ class WindowsAuth implements AuthProvider {
   
   /// Build Keycloak authorization URL with state
   String _buildAuthUrl(String state) {
+    final config = _config!; // We know config is initialized at this point
     final params = {
       'response_type': 'code',
-      'client_id': _config.clientId,
-      'redirect_uri': _config.redirectUri,
-      'scope': _config.scopes.join(' '),
+      'client_id': config.clientId,
+      'redirect_uri': config.redirectUri,
+      'scope': config.scopes.join(' '),
       'state': state,
     };
     
@@ -232,7 +240,7 @@ class WindowsAuth implements AuthProvider {
         .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
         .join('&');
     
-    return '${_config.issuer}protocol/openid-connect/auth?$queryString';
+    return '${config.issuer}protocol/openid-connect/auth?$queryString';
   }
   
   /// Start local HTTP server to handle OAuth callback
@@ -339,14 +347,22 @@ class WindowsAuth implements AuthProvider {
   /// Exchange authorization code for access tokens
   Future<Map<String, String>> _exchangeCodeForTokens(String authCode) async {
     try {
-      final tokenEndpoint = '${_config.issuer}protocol/openid-connect/token';
+      final config = _config!; // We know config is initialized at this point
+      final tokenEndpoint = '${config.issuer}protocol/openid-connect/token';
       
-      // Prepare request body - try different client authentication methods
-      final body = <String, String>{
+      debugPrint("[WindowsAuth] ===== TOKEN EXCHANGE DEBUG =====");
+      debugPrint("[WindowsAuth] Token endpoint: $tokenEndpoint");
+      debugPrint("[WindowsAuth] Client ID: ${config.clientId}");
+      debugPrint("[WindowsAuth] Client Secret exists: ${config.clientSecret != null && config.clientSecret!.isNotEmpty}");
+      debugPrint("[WindowsAuth] Redirect URI: ${config.redirectUri}");
+      debugPrint("[WindowsAuth] Auth Code length: ${authCode.length}");
+      
+      // Prepare request body
+      final baseBody = <String, String>{
         'grant_type': 'authorization_code',
-        'client_id': _config.clientId,
+        'client_id': config.clientId,
         'code': authCode,
-        'redirect_uri': _config.redirectUri,
+        'redirect_uri': config.redirectUri,
       };
       
       Map<String, String> headers = {
@@ -354,64 +370,94 @@ class WindowsAuth implements AuthProvider {
         'Accept': 'application/json',
       };
       
-      // Try client_secret first (most common for confidential clients)
-      if (_config.clientSecret != null && _config.clientSecret!.isNotEmpty) {
-        body['client_secret'] = _config.clientSecret!;
-      } else {
-        // For public clients, try without client_secret
-        debugPrint("[WindowsAuth] Using public client authentication");
-      }
-      
-      debugPrint("[WindowsAuth] Token endpoint: $tokenEndpoint");
-      debugPrint("[WindowsAuth] Request body: ${body.keys.join(', ')}");
-      
-      final response = await http.post(
+      // First, try as public client (recommended for desktop apps)
+      debugPrint("[WindowsAuth] Attempting public client authentication...");
+      final publicResponse = await http.post(
         Uri.parse(tokenEndpoint),
         headers: headers,
-        body: body,
+        body: baseBody,
       );
       
-      debugPrint("[WindowsAuth] Token exchange response status: ${response.statusCode}");
-      debugPrint("[WindowsAuth] Token exchange response: ${response.body}");
+      debugPrint("[WindowsAuth] Public client response status: ${publicResponse.statusCode}");
+      debugPrint("[WindowsAuth] Public client response: ${publicResponse.body}");
       
-      if (response.statusCode != 200) {
-        // If confidential client fails, try as public client
-        if (_config.clientSecret != null && response.statusCode == 400) {
-          debugPrint("[WindowsAuth] Confidential client failed, trying public client...");
-          
-          final publicBody = <String, String>{
-            'grant_type': 'authorization_code',
-            'client_id': _config.clientId,
-            'code': authCode,
-            'redirect_uri': _config.redirectUri,
-            // No client_secret for public client
-          };
-          
-          final publicResponse = await http.post(
-            Uri.parse(tokenEndpoint),
-            headers: headers,
-            body: publicBody,
-          );
-          
-          debugPrint("[WindowsAuth] Public client response status: ${publicResponse.statusCode}");
-          debugPrint("[WindowsAuth] Public client response: ${publicResponse.body}");
-          
-          if (publicResponse.statusCode == 200) {
-            final tokenData = jsonDecode(publicResponse.body) as Map<String, dynamic>;
-            return _extractTokens(tokenData);
-          }
-        }
-        
-        debugPrint("[WindowsAuth] Token exchange failed: ${response.body}");
-        throw Exception('Token exchange failed: ${response.statusCode} - ${response.body}');
+      if (publicResponse.statusCode == 200) {
+        debugPrint("[WindowsAuth] Public client authentication successful!");
+        final tokenData = jsonDecode(publicResponse.body) as Map<String, dynamic>;
+        return _extractTokens(tokenData);
       }
       
-      final tokenData = jsonDecode(response.body) as Map<String, dynamic>;
-      return _extractTokens(tokenData);
+      // If public client fails and we have a client secret, try confidential client
+      if (config.clientSecret != null && config.clientSecret!.isNotEmpty) {
+        debugPrint("[WindowsAuth] Public client failed, trying confidential client...");
+        
+        final confidentialBody = <String, String>{
+          ...baseBody,
+          'client_secret': config.clientSecret!,
+        };
+        
+        final confidentialResponse = await http.post(
+          Uri.parse(tokenEndpoint),
+          headers: headers,
+          body: confidentialBody,
+        );
+        
+        debugPrint("[WindowsAuth] Confidential client response status: ${confidentialResponse.statusCode}");
+        debugPrint("[WindowsAuth] Confidential client response: ${confidentialResponse.body}");
+        
+        if (confidentialResponse.statusCode == 200) {
+          debugPrint("[WindowsAuth] Confidential client authentication successful!");
+          final tokenData = jsonDecode(confidentialResponse.body) as Map<String, dynamic>;
+          return _extractTokens(tokenData);
+        }
+        
+        // Both failed, provide detailed error
+        debugPrint("[WindowsAuth] Both public and confidential client authentication failed");
+        _logTokenExchangeError(publicResponse, confidentialResponse);
+        throw Exception('Token exchange failed: ${confidentialResponse.statusCode} - ${confidentialResponse.body}');
+      } else {
+        // Only public client available and it failed
+        debugPrint("[WindowsAuth] Public client authentication failed (no client secret available)");
+        _logTokenExchangeError(publicResponse, null);
+        throw Exception('Token exchange failed: ${publicResponse.statusCode} - ${publicResponse.body}');
+      }
     } catch (e) {
       debugPrint("[WindowsAuth] Token exchange error: $e");
       rethrow;
     }
+  }
+  
+  /// Log detailed error information for token exchange failures
+  void _logTokenExchangeError(http.Response publicResponse, http.Response? confidentialResponse) {
+    debugPrint("[WindowsAuth] ===== TOKEN EXCHANGE ERROR DETAILS =====");
+    debugPrint("[WindowsAuth] Public client error: ${publicResponse.statusCode} - ${publicResponse.body}");
+    
+    if (confidentialResponse != null) {
+      debugPrint("[WindowsAuth] Confidential client error: ${confidentialResponse.statusCode} - ${confidentialResponse.body}");
+    }
+    
+    // Parse and log specific error details
+    try {
+      final publicError = jsonDecode(publicResponse.body);
+      debugPrint("[WindowsAuth] Public client error type: ${publicError['error']}");
+      debugPrint("[WindowsAuth] Public client error description: ${publicError['error_description']}");
+      
+      if (confidentialResponse != null) {
+        final confidentialError = jsonDecode(confidentialResponse.body);
+        debugPrint("[WindowsAuth] Confidential client error type: ${confidentialError['error']}");
+        debugPrint("[WindowsAuth] Confidential client error description: ${confidentialError['error_description']}");
+      }
+    } catch (e) {
+      debugPrint("[WindowsAuth] Could not parse error response: $e");
+    }
+    
+    debugPrint("[WindowsAuth] ===== POSSIBLE SOLUTIONS =====");
+    debugPrint("[WindowsAuth] 1. Check if client ID '${_config?.clientId}' exists in Keycloak");
+    debugPrint("[WindowsAuth] 2. Check if client is configured correctly for Authorization Code flow");
+    debugPrint("[WindowsAuth] 3. Check if redirect URI '${_config?.redirectUri}' is allowed");
+    debugPrint("[WindowsAuth] 4. Check if client is set as 'Public' client in Keycloak");
+    debugPrint("[WindowsAuth] 5. Check Keycloak server logs for more details");
+    debugPrint("[WindowsAuth] ==========================================");
   }
   
   /// Extract tokens from response
@@ -428,7 +474,8 @@ class WindowsAuth implements AuthProvider {
   /// Get user information from UserInfo endpoint
   Future<Map<String, dynamic>> _getUserInfo(String accessToken) async {
     try {
-      final userInfoEndpoint = '${_config.issuer}protocol/openid-connect/userinfo';
+      final config = _config!; // We know config is initialized at this point
+      final userInfoEndpoint = '${config.issuer}protocol/openid-connect/userinfo';
       debugPrint("[WindowsAuth] Calling UserInfo endpoint: $userInfoEndpoint");
       
       final response = await http.get(
@@ -505,7 +552,9 @@ class WindowsAuth implements AuthProvider {
         throw Exception('No refresh token available');
       }
       
-      final tokenEndpoint = '${_config.issuer}protocol/openid-connect/token';
+      await _initializeConfig(); // Ensure config is loaded
+      final config = _config!;
+      final tokenEndpoint = '${config.issuer}protocol/openid-connect/token';
       
       final response = await http.post(
         Uri.parse(tokenEndpoint),
@@ -515,9 +564,9 @@ class WindowsAuth implements AuthProvider {
         },
         body: {
           'grant_type': 'refresh_token',
-          'client_id': _config.clientId,
+          'client_id': config.clientId,
           'refresh_token': refreshToken,
-          if (_config.clientSecret != null) 'client_secret': _config.clientSecret!,
+          if (config.clientSecret != null) 'client_secret': config.clientSecret!,
         },
       );
       
@@ -553,17 +602,19 @@ class WindowsAuth implements AuthProvider {
         return;
       }
       
-      final logoutEndpoint = '${_config.issuer}protocol/openid-connect/logout';
+      await _initializeConfig(); // Ensure config is loaded
+      final config = _config!;
+      final logoutEndpoint = '${config.issuer}protocol/openid-connect/logout';
       
       // Prepare logout request body
       final body = <String, String>{
-        'client_id': _config.clientId,
+        'client_id': config.clientId,
         'refresh_token': refreshToken,
       };
       
       // Add client_secret if available (for confidential clients)
-      if (_config.clientSecret != null && _config.clientSecret!.isNotEmpty) {
-        body['client_secret'] = _config.clientSecret!;
+      if (config.clientSecret != null && config.clientSecret!.isNotEmpty) {
+        body['client_secret'] = config.clientSecret!;
       }
       
       debugPrint("[WindowsAuth] Logout endpoint: $logoutEndpoint");
@@ -587,10 +638,10 @@ class WindowsAuth implements AuthProvider {
       } else if (response.statusCode == 400) {
         debugPrint("[WindowsAuth] Server logout failed - bad request: ${response.body}");
         // Try without client_secret for public clients
-        if (_config.clientSecret != null) {
+        if (config.clientSecret != null) {
           debugPrint("[WindowsAuth] Retrying logout as public client...");
           final publicBody = <String, String>{
-            'client_id': _config.clientId,
+            'client_id': config.clientId,
             'refresh_token': refreshToken,
           };
           
@@ -609,7 +660,7 @@ class WindowsAuth implements AuthProvider {
           }
         }
       } else {
-        debugPrint("[WindowsAuth] Server logout failed with status ${response.statusCode}: ${response.body}");
+        debugPrint("[WindowsAuth] Unexpected logout response: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       debugPrint("[WindowsAuth] Silent logout error: $e");
@@ -663,149 +714,39 @@ class WindowsAuth implements AuthProvider {
     
     if (isVietnamese) {
       return '''
-        <html>
-          <head>
-            <title>Đăng nhập thành công</title>
-            <meta charset="utf-8">
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                padding: 50px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-              }
-              .container {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 15px;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                max-width: 600px;
-              }
-              .success-icon {
-                font-size: 64px;
-                color: #4caf50;
-                margin-bottom: 20px;
-              }
-              .message {
-                font-size: 18px;
-                margin: 15px 0;
-                opacity: 0.9;
-              }
-              .note {
-                font-size: 14px;
-                opacity: 0.7;
-                margin-top: 30px;
-                padding: 15px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                text-align: left;
-              }
-              .divider {
-                height: 1px;
-                background: rgba(255, 255, 255, 0.3);
-                margin: 20px 0;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="success-icon">✅</div>
-              <h1 style="color: #4caf50; margin: 20px 0;">Đăng nhập thành công!</h1>
-              
-              <div class="divider"></div>
-              
-              <p class="message">Bạn đã đăng nhập thành công vào hệ thống Tra cứu GCN.</p>
-              <p class="message">Quay lại ứng dụng để tiếp tục sử dụng.</p>
-              
-              <div class="note">
-                <strong>📌 Hướng dẫn:</strong><br>
-                Bạn có thể đóng tab này và quay lại ứng dụng để sử dụng các tính năng.
-              </div>
-            </div>
-          </body>
-        </html>
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Đăng nhập thành công</title>
+          <style>
+              body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+              .success { color: green; font-size: 24px; }
+          </style>
+      </head>
+      <body>
+          <div class="success">✓ Đăng nhập thành công!</div>
+          <p>Bạn có thể đóng cửa sổ này và quay lại ứng dụng.</p>
+      </body>
+      </html>
       ''';
     } else {
       return '''
-        <html>
-          <head>
-            <title>Login Successful</title>
-            <meta charset="utf-8">
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                padding: 50px;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                color: white;
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-              }
-              .container {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 15px;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                max-width: 600px;
-              }
-              .success-icon {
-                font-size: 64px;
-                color: #4caf50;
-                margin-bottom: 20px;
-              }
-              .message {
-                font-size: 18px;
-                margin: 15px 0;
-                opacity: 0.9;
-              }
-              .note {
-                font-size: 14px;
-                opacity: 0.7;
-                margin-top: 30px;
-                padding: 15px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                text-align: left;
-              }
-              .divider {
-                height: 1px;
-                background: rgba(255, 255, 255, 0.3);
-                margin: 20px 0;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="success-icon">✅</div>
-              <h1 style="color: #4caf50; margin: 20px 0;">Login Successful!</h1>
-              
-              <div class="divider"></div>
-              
-              <p class="message">You have successfully logged into the Certificate Lookup System.</p>
-              <p class="message">Return to the application to continue using.</p>
-              
-              <div class="note">
-                <strong>📌 Instructions:</strong><br>
-                You can close this tab and return to the application to use the features.
-              </div>
-            </div>
-          </body>
-        </html>
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Login Successful</title>
+          <style>
+              body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+              .success { color: green; font-size: 24px; }
+          </style>
+      </head>
+      <body>
+          <div class="success">✓ Login Successful!</div>
+          <p>You can close this window and return to the application.</p>
+      </body>
+      </html>
       ''';
     }
   }
@@ -818,171 +759,43 @@ class WindowsAuth implements AuthProvider {
     
     if (isVietnamese) {
       return '''
-        <html>
-          <head>
-            <title>Đăng nhập thất bại</title>
-            <meta charset="utf-8">
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                padding: 50px;
-                background: linear-gradient(135deg, #ff7b7b 0%, #d32f2f 100%);
-                color: white;
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-              }
-              .container {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 15px;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                max-width: 600px;
-              }
-              .error-icon {
-                font-size: 64px;
-                color: #ff5252;
-                margin-bottom: 20px;
-              }
-              .error-details {
-                background: rgba(0, 0, 0, 0.2);
-                padding: 15px;
-                border-radius: 8px;
-                margin: 20px 0;
-                font-family: 'Courier New', monospace;
-                font-size: 14px;
-              }
-              .note {
-                font-size: 14px;
-                opacity: 0.8;
-                margin-top: 20px;
-                padding: 15px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                text-align: left;
-              }
-              .divider {
-                height: 1px;
-                background: rgba(255, 255, 255, 0.3);
-                margin: 15px 0;
-              }
-              .message {
-                margin: 10px 0;
-                opacity: 0.9;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="error-icon">❌</div>
-              <h1 style="color: #ff5252; margin: 20px 0;">Đăng nhập thất bại</h1>
-              
-              <div class="divider"></div>
-              
-              <p class="message">Đã xảy ra lỗi trong quá trình đăng nhập:</p>
-              
-              <div class="error-details">
-                <strong>Lỗi:</strong> $error<br>
-                <strong>Mô tả:</strong> $errorDesc
-              </div>
-              
-              <div class="note">
-                <strong>💡 Hướng dẫn:</strong><br>
-                Vui lòng đóng tab này và thử đăng nhập lại trong ứng dụng.
-              </div>
-            </div>
-          </body>
-        </html>
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Lỗi đăng nhập</title>
+          <style>
+              body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+              .error { color: red; font-size: 24px; }
+          </style>
+      </head>
+      <body>
+          <div class="error">✗ Lỗi đăng nhập</div>
+          <p><strong>Mã lỗi:</strong> $error</p>
+          <p><strong>Mô tả:</strong> $errorDesc</p>
+          <p>Vui lòng đóng cửa sổ này và thử lại.</p>
+      </body>
+      </html>
       ''';
     } else {
       return '''
-        <html>
-          <head>
-            <title>Login Failed</title>
-            <meta charset="utf-8">
-            <style>
-              body {
-                font-family: Arial, sans-serif;
-                text-align: center;
-                padding: 50px;
-                background: linear-gradient(135deg, #ff7b7b 0%, #d32f2f 100%);
-                color: white;
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-              }
-              .container {
-                background: rgba(255, 255, 255, 0.1);
-                padding: 40px;
-                border-radius: 15px;
-                backdrop-filter: blur(10px);
-                box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
-                border: 1px solid rgba(255, 255, 255, 0.18);
-                max-width: 600px;
-              }
-              .error-icon {
-                font-size: 64px;
-                color: #ff5252;
-                margin-bottom: 20px;
-              }
-              .error-details {
-                background: rgba(0, 0, 0, 0.2);
-                padding: 15px;
-                border-radius: 8px;
-                margin: 20px 0;
-                font-family: 'Courier New', monospace;
-                font-size: 14px;
-              }
-              .note {
-                font-size: 14px;
-                opacity: 0.8;
-                margin-top: 20px;
-                padding: 15px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 8px;
-                text-align: left;
-              }
-              .divider {
-                height: 1px;
-                background: rgba(255, 255, 255, 0.3);
-                margin: 15px 0;
-              }
-              .message {
-                margin: 10px 0;
-                opacity: 0.9;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="container">
-              <div class="error-icon">❌</div>
-              <h1 style="color: #ff5252; margin: 20px 0;">Login Failed</h1>
-              
-              <div class="divider"></div>
-              
-              <p class="message">An error occurred during the login process:</p>
-              
-              <div class="error-details">
-                <strong>Error:</strong> $error<br>
-                <strong>Description:</strong> $errorDesc
-              </div>
-              
-              <div class="note">
-                <strong>💡 Instructions:</strong><br>
-                Please close this tab and try logging in again from the application.
-              </div>
-            </div>
-          </body>
-        </html>
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Login Error</title>
+          <style>
+              body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+              .error { color: red; font-size: 24px; }
+          </style>
+      </head>
+      <body>
+          <div class="error">✗ Login Error</div>
+          <p><strong>Error:</strong> $error</p>
+          <p><strong>Description:</strong> $errorDesc</p>
+          <p>Please close this window and try again.</p>
+      </body>
+      </html>
       ''';
     }
   }
