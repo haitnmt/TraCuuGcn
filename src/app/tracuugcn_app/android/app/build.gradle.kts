@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tracuugcn_app"
+    namespace = "vn.haihv.tracuugcn"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,14 +20,14 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.tracuugcn_app"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        applicationId = "vn.haihv.tracuugcn"
+        minSdk = 21 // AppAuth requires minimum API 21
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        
+        // AppAuth redirect scheme configuration
+        manifestPlaceholders["appAuthRedirectScheme"] = "vn.haihv.tracuugcn"
     }
 
     buildTypes {

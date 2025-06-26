@@ -79,6 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: _buildAppBar(context),
       drawer: DrawerWidgets.buildAppDrawer(context), // Always show left drawer
       body: _buildBody(context),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.pushNamed(context, '/auth-demo');
+        },
+        icon: const Icon(Icons.security),
+        label: const Text('Auth Demo'),
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+      ),
     );
   }
 

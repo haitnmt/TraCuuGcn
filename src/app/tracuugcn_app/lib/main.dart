@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
+import 'screens/auth_demo_screen.dart';
 import 'services/language_service.dart';
 import 'l10n/app_localizations.dart';
 
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             routes: {
               '/': (context) => const HomeScreen(),
+              '/auth-demo': (context) => const AuthDemoScreen(),
             },
           );
         },
